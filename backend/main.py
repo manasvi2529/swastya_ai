@@ -124,15 +124,38 @@ def get_clusters():
     result = []
 
     for cluster in clusters:
+        size = cluster["size"]
+
+        # 🔥 Risk calculation
+        if size >= 10:
+            risk = "High"
+        elif size >= 5:
+            risk = "Medium"
+        else:
+            risk = "Low"
+
+        # 🔥 Alert logic
+        alert = "⚠️ Possible outbreak detected" if size >= 5 else "Normal"
+
+        # 🔥 Color for map
+        if risk == "High":
+            color = "red"
+        elif risk == "Medium":
+            color = "yellow"
+        else:
+            color = "green"
+
         result.append({
             "disease": cluster["disease"],
-            "size": cluster["size"],
+            "size": size,
             "lat": cluster["cases"][0]["lat"],
-            "lon": cluster["cases"][0]["lon"]
+            "lon": cluster["cases"][0]["lon"],
+            "risk": risk,
+            "alert": alert,
+            "zone_color": color
         })
 
     return result
-
 
 # ==============================
 # ✅ 4. ALERT API
