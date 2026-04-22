@@ -87,6 +87,10 @@ def submit_data(data: UserInput):
     clusters = detect_clusters(cases)
     risk = calculate_risk(clusters)
 
+
+    lat = data.get("lat", 28.61)  
+lon = data.get("lon", 77.23)
+
     return {
         "disease": disease,
         "confidence": prob,
