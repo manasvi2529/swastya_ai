@@ -1,0 +1,201 @@
+fever,headache,diarrhea,vomiting,fatigue,cough,body_pain,disease
+1,1,0,0,0,0,1,Viral Infection
+1,1,0,1,0,0,0,Viral Infection
+0,1,0,1,1,1,1,Flu
+0,0,1,1,0,0,0,Cholera
+1,0,0,0,1,0,0,Typhoid
+0,0,1,1,0,1,0,Cholera
+0,0,1,1,0,0,0,Cholera
+0,1,1,1,0,0,0,Food Poisoning
+1,0,0,0,1,0,0,Viral Infection
+1,1,0,1,1,0,0,Typhoid
+0,1,0,0,1,0,0,Typhoid
+0,0,1,1,0,1,1,Flu
+0,1,0,0,1,1,0,Typhoid
+1,0,0,0,0,1,1,Flu
+0,1,1,1,0,1,0,Food Poisoning
+0,0,0,1,0,0,0,Food Poisoning
+1,0,1,0,0,1,0,Viral Infection
+1,0,1,1,0,0,0,Cholera
+0,1,1,0,0,0,0,Cholera
+1,0,1,1,0,0,0,Cholera
+1,0,1,1,0,0,0,Food Poisoning
+1,1,0,0,1,0,0,Viral Infection
+1,1,0,0,1,1,1,Flu
+0,0,0,1,0,1,0,Food Poisoning
+0,0,1,1,0,0,0,Cholera
+1,1,0,0,0,1,0,Viral Infection
+0,0,1,1,0,0,1,Cholera
+0,0,0,0,0,1,1,Flu
+1,1,0,0,0,0,0,Viral Infection
+0,0,0,1,1,0,0,Food Poisoning
+1,0,0,0,0,1,1,Flu
+1,1,0,0,0,1,0,Viral Infection
+0,0,1,1,0,1,0,Cholera
+0,1,1,1,1,0,0,Food Poisoning
+0,0,0,0,0,1,0,Food Poisoning
+1,1,0,0,0,0,0,Viral Infection
+1,0,0,0,0,1,1,Flu
+0,1,1,1,0,1,0,Food Poisoning
+1,1,0,0,0,0,0,Viral Infection
+0,1,0,0,1,0,0,Typhoid
+0,0,0,1,0,0,1,Cholera
+1,0,1,1,0,0,0,Food Poisoning
+0,0,1,1,1,0,0,Cholera
+1,0,1,1,0,0,0,Food Poisoning
+0,1,0,1,1,0,1,Food Poisoning
+0,0,1,0,1,1,0,Food Poisoning
+1,1,1,0,1,0,0,Typhoid
+0,1,1,1,0,0,0,Food Poisoning
+0,1,1,0,1,0,0,Typhoid
+0,0,1,0,0,1,1,Food Poisoning
+1,1,0,1,0,1,1,Flu
+0,0,0,1,0,0,0,Cholera
+1,0,0,0,1,0,0,Viral Infection
+0,0,1,1,0,0,0,Food Poisoning
+1,1,0,1,1,1,0,Typhoid
+0,1,1,1,1,0,0,Typhoid
+1,1,0,0,1,0,0,Viral Infection
+0,0,1,1,0,0,1,Food Poisoning
+1,1,0,1,0,0,1,Viral Infection
+1,0,0,0,1,0,1,Flu
+0,0,1,1,0,0,1,Food Poisoning
+1,0,0,0,0,1,1,Flu
+1,0,0,0,1,1,1,Flu
+1,1,0,0,0,0,0,Flu
+0,0,1,1,1,1,1,Cholera
+0,0,0,1,0,1,0,Food Poisoning
+1,0,0,0,1,1,0,Typhoid
+1,0,0,0,1,1,0,Flu
+1,1,0,0,0,0,0,Viral Infection
+1,0,0,0,1,1,0,Typhoid
+1,0,0,0,1,1,1,Flu
+0,1,0,1,0,0,1,Flu
+0,0,1,1,0,1,0,Cholera
+1,0,1,1,0,0,0,Cholera
+1,1,0,0,0,1,1,Flu
+0,0,1,0,0,1,0,Food Poisoning
+1,0,0,0,0,1,1,Flu
+1,1,1,1,0,0,1,Food Poisoning
+1,1,1,0,0,1,0,Viral Infection
+1,1,0,1,1,0,0,Typhoid
+0,1,0,0,1,1,1,Flu
+0,1,0,0,1,0,1,Typhoid
+1,1,0,0,0,0,0,Typhoid
+1,0,0,0,1,1,1,Flu
+1,1,0,0,0,0,1,Flu
+1,1,1,0,1,0,0,Typhoid
+0,0,1,1,0,1,0,Cholera
+0,1,0,0,0,0,0,Typhoid
+0,1,1,1,0,0,0,Cholera
+1,1,0,0,0,0,0,Typhoid
+1,1,0,0,0,0,1,Flu
+1,0,1,0,0,1,1,Flu
+0,0,1,1,0,0,0,Food Poisoning
+1,0,1,1,0,0,0,Cholera
+1,1,0,0,0,1,0,Viral Infection
+1,0,0,0,1,0,0,Viral Infection
+0,1,1,0,0,1,0,Cholera
+1,0,0,1,0,0,0,Food Poisoning
+1,0,1,1,0,0,0,Cholera
+0,0,1,1,0,0,0,Cholera
+0,0,1,1,0,0,0,Cholera
+0,1,0,0,0,0,0,Cholera
+0,0,1,0,0,0,0,Food Poisoning
+0,0,1,1,0,1,0,Cholera
+1,1,1,0,1,0,1,Viral Infection
+0,0,0,1,0,0,0,Cholera
+0,1,0,0,0,0,0,Viral Infection
+0,0,0,1,0,1,0,Food Poisoning
+1,0,1,1,0,0,0,Food Poisoning
+0,0,1,0,0,1,1,Flu
+1,1,1,0,1,1,0,Typhoid
+0,1,1,1,0,1,0,Food Poisoning
+0,0,1,0,0,0,0,Viral Infection
+1,1,0,0,0,0,0,Viral Infection
+1,1,0,0,0,1,1,Viral Infection
+0,0,0,1,0,0,0,Food Poisoning
+1,0,1,1,0,0,0,Cholera
+0,1,0,0,1,0,0,Typhoid
+1,1,0,1,1,0,0,Typhoid
+1,1,1,1,1,0,0,Viral Infection
+1,0,1,1,0,1,1,Flu
+0,0,1,1,0,0,1,Cholera
+1,0,0,0,0,1,1,Flu
+1,0,0,0,0,1,1,Flu
+0,0,1,1,0,0,0,Food Poisoning
+0,1,0,1,0,0,0,Viral Infection
+1,0,0,0,1,0,0,Typhoid
+0,0,1,1,1,1,1,Food Poisoning
+0,0,0,0,0,1,1,Flu
+1,1,0,0,1,0,0,Typhoid
+0,1,0,1,0,0,0,Viral Infection
+0,0,0,1,1,1,1,Flu
+1,1,0,0,0,1,0,Flu
+1,1,0,0,0,0,0,Viral Infection
+1,0,1,0,0,0,0,Typhoid
+0,0,1,1,0,0,1,Cholera
+1,1,1,0,0,0,0,Viral Infection
+1,1,0,0,0,0,0,Viral Infection
+0,0,0,1,1,1,0,Food Poisoning
+0,0,1,1,0,1,0,Food Poisoning
+1,1,0,0,1,0,1,Typhoid
+1,1,0,1,1,0,1,Typhoid
+0,0,1,1,0,0,0,Cholera
+0,1,0,0,1,0,1,Typhoid
+0,0,1,0,1,0,0,Cholera
+1,0,1,1,1,0,0,Food Poisoning
+1,1,0,0,0,1,0,Viral Infection
+1,0,0,0,0,0,1,Flu
+1,1,1,0,0,0,0,Viral Infection
+1,1,1,0,0,0,0,Typhoid
+1,0,0,0,0,1,1,Flu
+1,1,0,1,1,1,0,Typhoid
+1,0,1,1,1,0,0,Cholera
+1,1,1,0,1,0,0,Typhoid
+1,1,0,0,0,0,0,Typhoid
+0,0,1,1,0,0,1,Cholera
+1,1,0,1,1,0,0,Typhoid
+0,1,1,1,1,0,0,Food Poisoning
+0,0,1,0,0,1,0,Food Poisoning
+0,1,0,0,0,1,1,Viral Infection
+1,0,0,0,0,0,1,Viral Infection
+1,0,1,0,1,1,1,Flu
+0,1,0,0,1,0,0,Typhoid
+0,0,1,1,1,0,0,Viral Infection
+1,1,0,0,0,1,0,Viral Infection
+0,0,1,1,0,0,1,Food Poisoning
+1,1,0,1,0,1,0,Viral Infection
+0,0,0,1,1,0,0,Food Poisoning
+0,0,1,1,0,0,0,Cholera
+1,0,0,0,1,1,1,Flu
+0,0,1,1,0,0,0,Food Poisoning
+1,0,1,0,0,1,1,Flu
+1,1,0,0,0,0,1,Viral Infection
+1,1,0,0,0,0,0,Typhoid
+0,1,1,1,0,0,0,Cholera
+1,1,0,0,0,1,0,Viral Infection
+1,1,1,1,1,1,0,Typhoid
+0,0,1,1,0,0,1,Cholera
+1,1,1,0,1,0,1,Typhoid
+0,0,1,1,1,0,1,Cholera
+1,0,0,0,0,1,1,Flu
+1,0,0,0,1,1,1,Flu
+0,0,1,1,0,1,0,Cholera
+1,0,0,1,0,1,1,Flu
+1,1,1,0,1,0,1,Typhoid
+0,0,0,1,1,0,0,Food Poisoning
+1,1,0,1,1,0,0,Typhoid
+1,1,0,0,0,1,0,Viral Infection
+0,0,0,0,0,1,1,Flu
+0,0,1,1,0,0,0,Cholera
+1,0,0,0,0,1,0,Flu
+1,1,1,0,0,0,0,Viral Infection
+0,0,0,0,0,1,1,Flu
+0,0,0,1,0,0,0,Cholera
+1,1,0,0,0,0,0,Viral Infection
+0,0,0,0,1,0,0,Typhoid
+1,1,0,0,1,0,0,Typhoid
+0,0,1,1,0,0,0,Food Poisoning
+0,0,1,0,0,0,0,Cholera
+1,1,0,1,1,0,1,Typhoid
