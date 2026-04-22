@@ -89,7 +89,7 @@ def submit_data(data: UserInput):
 
 
     lat = data.get("lat", 28.61)  
-lon = data.get("lon", 77.23)
+    lon = data.get("lon", 77.23)
 
     return {
         "disease": disease,
