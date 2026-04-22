@@ -3,8 +3,21 @@ from datetime import datetime
 
 DB_NAME = "epiguard.db"
 
-def init_db():
+
+# ==============================
+# ✅ Get DB connection
+# ==============================
+def get_connection():
     conn = sqlite3.connect(DB_NAME)
+    conn.row_factory = sqlite3.Row  # 🔥 makes rows behave like dict
+    return conn
+
+
+# ==============================
+# ✅ Initialize DB
+# ==============================
+def init_db():
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -23,8 +36,11 @@ def init_db():
     conn.close()
 
 
+# ==============================
+# ✅ Insert new case
+# ==============================
 def insert_case(symptoms, lat, lon, disease, probability):
-    conn = sqlite3.connect(DB_NAME)
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -43,11 +59,14 @@ def insert_case(symptoms, lat, lon, disease, probability):
     conn.close()
 
 
-def fetch_all_cases():
-    conn = sqlite3.connect(DB_NAME)
+# ==============================
+# ✅ Fetch ALL cases
+# ==============================
+def fetch_all_cases(limit=200):
+    conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM cases")
+    cursor.execute("SELECT * FROM cases ORDER BY id DESC LIMIT ?", (limit,))
     rows = cursor.fetchall()
 
     conn.close()
@@ -55,13 +74,43 @@ def fetch_all_cases():
     cases = []
     for row in rows:
         cases.append({
-            "id": row[0],
-            "symptoms": row[1].split(","),
-            "lat": row[2],
-            "lon": row[3],
-            "disease": row[4],
-            "probability": row[5],
-            "timestamp": row[6]
+            "id": row["id"],
+            "symptoms": row["symptoms"].split(","),
+            "lat": row["latitude"],
+            "lon": row["longitude"],
+            "disease": row["disease"],
+            "probability": row["probability"],
+            "timestamp": row["timestamp"]
+        })
+
+    return cases
+
+
+# ==============================
+# ✅ Fetch recent cases (optional 🔥)
+# ==============================
+def fetch_recent_cases(minutes=60):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    SELECT * FROM cases
+    WHERE timestamp >= datetime('now', ?)
+    """, (f"-{minutes} minutes",))
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    cases = []
+    for row in rows:
+        cases.append({
+            "id": row["id"],
+            "symptoms": row["symptoms"].split(","),
+            "lat": row["latitude"],
+            "lon": row["longitude"],
+            "disease": row["disease"],
+            "probability": row["probability"],
+            "timestamp": row["timestamp"]
         })
 
     return cases
