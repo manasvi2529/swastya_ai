@@ -1,53 +1,37 @@
-import pickle
-import os
-import numpy as np
+# ==============================
+# ✅ Simple Rule-Based Disease Predictor
+# ==============================
 
-# ==============================
-# ✅ Load model safely
-# ==============================
-BASE_DIR = os.path.dirname(__file__)
-MODEL_PATH = os.path.join(BASE_DIR, "model.pkl")
-
-with open(MODEL_PATH, "rb") as f:
-    model = pickle.load(f)
-
-# ==============================
-# ✅ Symptom list (must match training)
-# ==============================
-symptom_list = [
-    "fever",
-    "headache",
-    "diarrhea",
-    "vomiting",
-    "fatigue",
-    "cough",
-    "body_pain"
-]
-
-# ==============================
-# ✅ Prediction function
-# ==============================
 def predict_disease(symptoms):
-
-    # 🔥 Normalize input (important)
+    
     symptoms = [s.lower().strip() for s in symptoms]
 
-    input_vector = []
+    score = {
+        "Cholera": 0,
+        "Flu": 0,
+        "Viral Infection": 0,
+        "Typhoid": 0
+    }
 
-    for s in symptom_list:
-        if s in symptoms:
-            input_vector.append(1)
-        else:
-            input_vector.append(0)
+    if "diarrhea" in symptoms:
+        score["Cholera"] += 3
+    if "vomiting" in symptoms:
+        score["Cholera"] += 2
 
-    input_array = np.array(input_vector).reshape(1, -1)
+    if "fever" in symptoms:
+        score["Flu"] += 2
+    if "cough" in symptoms:
+        score["Flu"] += 2
 
-    try:
-        prediction = model.predict(input_array)[0]
-        probability = model.predict_proba(input_array).max()
-    except Exception:
-        # 🔥 Fallback safety (hackathon-safe)
-        prediction = "Unknown"
-        probability = 0.0
+    if "fatigue" in symptoms:
+        score["Viral Infection"] += 2
 
-    return prediction, float(probability)
+    if "fever" in symptoms and "fatigue" in symptoms:
+        score["Typhoid"] += 3
+
+    predicted = max(score, key=score.get)
+    total = sum(score.values())
+
+    confidence = score[predicted] / total if total > 0 else 0.2
+
+    return predicted, round(confidence, 2)

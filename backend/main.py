@@ -22,14 +22,11 @@ app.add_middleware(
 init_db()
 
 # ==============================
-# 🔥 Disease → Cause mapping
+# 🔥 Input model (UPDATED)
 # ==============================
-disease_causes = {
-    "Cholera": "Contaminated water",
-    "Flu": "Viral infection",
-    "Dengue": "Mosquito bites",
-    "Typhoid": "Unsafe food and water"
-}
+class UserInput(BaseModel):
+    symptoms: list
+    location: list  # [lat, lon]
 
 # ==============================
 # 🔥 Static hospital list
@@ -40,72 +37,42 @@ hospitals = [
     {"name": "Fortis Hospital", "lat": 28.567, "lon": 77.243}
 ]
 
-# ==============================
-# 🔥 Helper: nearest hospitals
-# ==============================
 def get_nearest_hospitals(user_lat, user_lon):
     def distance(h):
         return ((user_lat - h["lat"])**2 + (user_lon - h["lon"])**2) ** 0.5
-
-    sorted_h = sorted(hospitals, key=distance)
-    return sorted_h[:3]
-
+    return sorted(hospitals, key=distance)[:3]
 
 # ==============================
-# 🔥 Input model
-# ==============================
-class UserInput(BaseModel):
-    symptoms: list
-    latitude: float
-    longitude: float
-
-
-# ==============================
-# ✅ 1. SUBMIT API
+# ✅ 1. SUBMIT API (FIXED)
 # ==============================
 @app.post("/submit")
-def submit(data: dict):
-    # 🔥 Get symptoms
-    symptoms = data.get("symptoms", [])
+def submit(data: UserInput):
+    symptoms = data.symptoms
+    lat, lon = data.location
 
-    # 🔥 Get location (with fallback)
-    lat = data.get("lat")
-    lon = data.get("lon")
+    result = predict_disease(symptoms)
 
-    if not lat or not lon:
-        lat, lon = 28.61, 77.23   # default (Delhi)
+    # 🔥 FIX
+    if isinstance(result, tuple):
+        disease = result[0]
+        probability = result[1]
+    else:
+        disease = result
+        probability = 0.85
 
-    # 🔥 Predict disease (your existing function)
-    disease = predict_disease(data)
-
-    # 🔥 Risk logic (your existing or keep simple)
     risk = "Low"
     if "fever" in symptoms:
         risk = "Medium"
 
-    # 🔥 Save case (VERY IMPORTANT for clusters)
-    case = {
-        "symptoms": symptoms,
-        "lat": lat,
-        "lon": lon,
-        "disease": disease
-    }
+    insert_case(symptoms, lat, lon, disease, probability)
 
-    save_case(case)   # your existing function
-
-    # 🔥 Return response
     return {
-        "disease": disease,
-        "confidence": 0.34,
-        "risk": risk,
-        "nearby_hospitals": [
-            {"name": "Apollo Hospital", "lat": 28.535, "lon": 77.241},
-            {"name": "AIIMS Delhi", "lat": 28.567, "lon": 77.21}
-        ]
+        "predicted_disease": disease,
+        "risk": risk
     }
 
 # ==============================
-# ✅ 2. GET DATA (map points)
+# ✅ 2. GET DATA (MAP)
 # ==============================
 @app.get("/get-data")
 def get_data():
@@ -120,48 +87,53 @@ def get_data():
         for c in cases
     ]
 
-
 # ==============================
 # ✅ 3. CLUSTERS API
 # ==============================
 @app.get("/clusters")
 def get_clusters():
     cases = fetch_all_cases()
+
     clusters = detect_clusters(cases)
 
     result = []
 
-    for cluster in clusters:
-        size = cluster["size"]
+    for c in clusters:
+     size = c["size"]
 
-        # 🔥 Risk calculation
-        if size >= 10:
-            risk = "High"
-        elif size >= 5:
-            risk = "Medium"
-        else:
-            risk = "Low"
+    # 🔥 Risk logic
+     if size >= 10:
+        risk = "High"
+     elif size >= 5:
+        risk = "Medium"
+     else:
+        risk = "Low"
 
-        # 🔥 Alert logic
-        alert = "⚠️ Possible outbreak detected" if size >= 5 else "Normal"
+    # 🔥 Alert logic (IMPROVED)
+     if size >= 10:
+        alert = "🚨 High outbreak detected"
+     elif size >= 5:
+        alert = "⚠️ Moderate outbreak"
+     else:
+        alert = "Normal"
 
-        # 🔥 Color for map
-        if risk == "High":
-            color = "red"
-        elif risk == "Medium":
-            color = "yellow"
-        else:
-            color = "green"
+    # 🔥 Color for map
+     if risk == "High":
+        color = "red"
+     elif risk == "Medium":
+        color = "yellow"
+     else:
+        color = "green"
 
-        result.append({
-            "disease": cluster["disease"],
-            "size": size,
-            "lat": cluster["cases"][0]["lat"],
-            "lon": cluster["cases"][0]["lon"],
-            "risk": risk,
-            "alert": alert,
-            "zone_color": color
-        })
+     result.append({
+        "disease": c["disease"],
+        "size": size,
+        "lat": c["lat"],
+        "lon": c["lon"],
+        "risk": risk,
+        "alert": alert,
+        "color": color
+    })
 
     return result
 
@@ -181,7 +153,6 @@ def get_alert():
     else:
         return {"alert": "✅ Area is safe"}
 
-
 # ==============================
 # ✅ 5. STATS API
 # ==============================
@@ -189,18 +160,15 @@ def get_alert():
 def get_stats():
     cases = fetch_all_cases()
 
-    total_cases = len(cases)
-
     disease_count = {}
     for c in cases:
         d = c["disease"]
         disease_count[d] = disease_count.get(d, 0) + 1
 
     return {
-        "total_cases": total_cases,
+        "total_cases": len(cases),
         "disease_distribution": disease_count
     }
-
 
 # ==============================
 # ✅ 6. RECENT API
@@ -219,18 +187,27 @@ def get_recent():
         for c in cases
     ]
 
-
 # ==============================
 # ✅ 7. CLEAR API
 # ==============================
 @app.delete("/clear")
 def clear_data():
-    conn = get_connection()
-    cursor = conn.cursor()
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
 
-    cursor.execute("DELETE FROM cases")
+        cursor.execute("SELECT COUNT(*) FROM cases")
+        count = cursor.fetchone()[0]
 
-    conn.commit()
-    conn.close()
+        cursor.execute("DELETE FROM cases")
 
-    return {"message": "All data cleared"}
+        conn.commit()
+        conn.close()
+
+        return {
+            "message": "All data cleared",
+            "deleted_records": count
+        }
+
+    except Exception as e:
+        return {"error": str(e)}

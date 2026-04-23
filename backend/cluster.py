@@ -6,7 +6,7 @@ import numpy as np
 # ✅ Detect clusters (per disease)
 # ==============================
 def detect_clusters(cases):
-    if len(cases) < 2:
+    if not cases or len(cases) < 2:
         return []
 
     clusters_result = []
@@ -14,10 +14,11 @@ def detect_clusters(cases):
     # 🔥 Group cases by disease
     disease_groups = {}
     for case in cases:
-        disease = case["disease"]
-        if disease not in disease_groups:
-            disease_groups[disease] = []
-        disease_groups[disease].append(case)
+        disease = case.get("disease")
+        if not disease:
+            continue
+
+        disease_groups.setdefault(disease, []).append(case)
 
     # 🔥 Run DBSCAN for each disease separately
     for disease, group in disease_groups.items():
@@ -25,35 +26,45 @@ def detect_clusters(cases):
         if len(group) < 2:
             continue
 
-        coords = np.array([[c["lat"], c["lon"]] for c in group])
+        try:
+            coords = np.array([[c["lat"], c["lon"]] for c in group])
+        except KeyError:
+            continue  # skip bad data safely
 
-        model = DBSCAN(eps=0.01, min_samples=2)
+        # 🔥 DBSCAN model (tuned for city-level clustering)
+        model = DBSCAN(eps=0.02, min_samples=2)
         labels = model.fit_predict(coords)
 
         temp_clusters = {}
 
         for i, label in enumerate(labels):
             if label == -1:
-                continue
+                continue  # ignore noise
 
-            if label not in temp_clusters:
-                temp_clusters[label] = []
+            temp_clusters.setdefault(label, []).append(group[i])
 
-            temp_clusters[label].append(group[i])
+        # 🔥 Build final cluster output
+        for cluster_cases in temp_clusters.values():
 
-        # Store clusters with disease info
-        for cluster in temp_clusters.values():
+            size = len(cluster_cases)
+
+            # 👉 Calculate cluster center (IMPORTANT for map)
+            avg_lat = sum(c["lat"] for c in cluster_cases) / size
+            avg_lon = sum(c["lon"] for c in cluster_cases) / size
+
             clusters_result.append({
                 "disease": disease,
-                "size": len(cluster),
-                "cases": cluster
+                "size": size,
+                "lat": round(avg_lat, 5),
+                "lon": round(avg_lon, 5),
+                "cases": cluster_cases
             })
 
     return clusters_result
 
 
 # ==============================
-# ✅ Calculate risk (improved)
+# ✅ Calculate risk (IMPROVED)
 # ==============================
 def calculate_risk(clusters):
 
@@ -62,9 +73,10 @@ def calculate_risk(clusters):
 
     max_cluster = max(c["size"] for c in clusters)
 
-    if max_cluster >= 8:
+    # 🔥 More realistic thresholds
+    if max_cluster >= 10:
         return "High"
-    elif max_cluster >= 4:
+    elif max_cluster >= 5:
         return "Medium"
     else:
         return "Low"
