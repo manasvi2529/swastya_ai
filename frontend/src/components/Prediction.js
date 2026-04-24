@@ -182,7 +182,25 @@ function Prediction() {
             </>
           )}
 
-          <p><b>Risk:</b> {result.risk}</p>
+          <p><b>Risk:</b> {result.risk === "High" && (
+  <p style={{ color: "red" }}>
+    🚨 High Risk Area Detected<br/>
+    Avoid crowded places
+  </p>
+)}
+
+{result.risk === "Medium" && (
+  <p style={{ color: "orange" }}>
+    ⚠️ Moderate Risk<br/>
+    Stay cautious
+  </p>
+)}
+
+{result.risk === "Low" && (
+  <p style={{ color: "green" }}>
+    ✅ Low Risk Area
+  </p>
+)}</p>
 
           {lat && lon ? (
             <p>📍 Based on your location</p>

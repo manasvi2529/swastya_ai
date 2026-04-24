@@ -312,21 +312,107 @@ doctors = [
         "phone": "9988776655"
     }
 ]
+# ==============================
+# 🔥 DOCTORS (Expanded list)
+# ==============================
+
+doctors = [
+    {
+        "name": "Dr. Sharma",
+        "specialization": "General Physician",
+        "phone": "9876543210",
+        "experience": "15 years",
+        "hospital": "City Hospital"
+    },
+    {
+        "name": "Dr. Mehta",
+        "specialization": "Cardiologist",
+        "phone": "9123456780",
+        "experience": "12 years",
+        "hospital": "Heart Institute"
+    },
+    {
+        "name": "Dr. Khan",
+        "specialization": "Dermatologist",
+        "phone": "9988776655",
+        "experience": "8 years",
+        "hospital": "Skin Clinic"
+    },
+    {
+        "name": "Dr. Patel",
+        "specialization": "General Physician",
+        "phone": "9876543222",
+        "experience": "10 years",
+        "hospital": "Family Care Center"
+    },
+    {
+        "name": "Dr. Gupta",
+        "specialization": "General Physician",
+        "phone": "9876543333",
+        "experience": "20 years",
+        "hospital": "Medical Center"
+    },
+    {
+        "name": "Dr. Reddy",
+        "specialization": "Cardiologist",
+        "phone": "9123456777",
+        "experience": "18 years",
+        "hospital": "Heart Specialists"
+    },
+    {
+        "name": "Dr. Singh",
+        "specialization": "Dermatologist",
+        "phone": "9988776444",
+        "experience": "6 years",
+        "hospital": "Skin & Hair Clinic"
+    }
+]
+
 @app.get("/doctors")
 def get_doctors(disease: str = None):
-
     disease_map = {
         "Flu": "General Physician",
         "Dengue": "General Physician",
+        "Cold": "General Physician",
+        "Fever": "General Physician",
+        "Covid": "General Physician",
         "Heart Disease": "Cardiologist",
-        "Skin Infection": "Dermatologist"
+        "Chest Pain": "Cardiologist",
+        "Skin Infection": "Dermatologist",
+        "Rash": "Dermatologist",
+        "Acne": "Dermatologist"
     }
+    
+    # If disease is provided, filter by specialization
+    if disease:
+        specialist = disease_map.get(disease, "General Physician")
+        filtered = [d for d in doctors if d["specialization"] == specialist]
+        
+        # Return filtered doctors OR all if none match
+        if filtered:
+            return filtered
+    
+    # Return ALL doctors if no disease or no match
+    return doctors
 
-    specialist = disease_map.get(disease, "General Physician")
+@app.get("/trend")
+def trend():
+    cases = fetch_all_cases()
 
-    filtered = [
-        d for d in doctors if d["specialization"] == specialist
-    ]
+    daily_counts = {}
 
-    # Return the list directly (or a dictionary)
-    return filtered if filtered else doctors
+    for c in cases:
+        date = c["timestamp"].split("T")[0]  # YYYY-MM-DD
+
+        if date not in daily_counts:
+            daily_counts[date] = 0
+
+        daily_counts[date] += 1
+
+    labels = list(daily_counts.keys())
+    data = list(daily_counts.values())
+
+    return {
+        "labels": labels,
+        "data": data
+    }

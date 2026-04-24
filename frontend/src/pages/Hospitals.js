@@ -73,18 +73,14 @@ function Hospitals() {
     const res = await fetch(url);
     const data = await res.json();
 
-    console.log("Doctors API:", data);
+    console.log("Doctors API response:", data);
 
-    // 🔥 HANDLE NEW BACKEND STRUCTURE
-    const allDoctors = [
-      ...(data.recommended || []),
-      ...(data.others || [])
-    ];
-
-    setDoctors(allDoctors);
+    // ✅ Directly set the data (no need to combine anything)
+    setDoctors(Array.isArray(data) ? data : []);
 
   } catch (err) {
     console.error("Doctor error", err);
+    setDoctors([]);
   }
 };
 
