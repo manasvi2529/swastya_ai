@@ -1,7 +1,8 @@
 import sqlite3
 from datetime import datetime
+from pathlib import Path
 
-DB_NAME = "epiguard.db"
+DB_NAME = Path(__file__).resolve().parent / "epiguard.db"
 
 
 # ==============================
@@ -62,11 +63,14 @@ def insert_case(symptoms, lat, lon, disease, probability):
 # ==============================
 # ✅ Fetch ALL cases
 # ==============================
-def fetch_all_cases(limit=200):
+def fetch_all_cases(limit=None):
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM cases ORDER BY id DESC LIMIT ?", (limit,))
+    if limit is None:
+        cursor.execute("SELECT * FROM cases ORDER BY id ASC")
+    else:
+        cursor.execute("SELECT * FROM cases ORDER BY id DESC LIMIT ?", (limit,))
     rows = cursor.fetchall()
 
     conn.close()

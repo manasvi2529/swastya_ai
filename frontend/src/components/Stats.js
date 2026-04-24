@@ -1,28 +1,66 @@
 import { useEffect, useState } from "react";
 
-function Stats() {
+function Stats({ refreshKey }) {
   const [stats, setStats] = useState(null);
 
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/stats")
-      .then(res => res.json())
-      .then(data => setStats(data));
-  }, []);
+  const fetchStats = async () => {
+    try {
+      const res = await fetch("http://127.0.0.1:8000/stats");
+      const data = await res.json();
+      setStats(data);
+    } catch (err) {
+      console.error("Stats error:", err);
+    }
+  };
 
-  if (!stats) return null;
+  useEffect(() => {
+    fetchStats();
+
+    // 🔥 Auto refresh every 5s
+    const interval = setInterval(fetchStats, 5000);
+
+    return () => clearInterval(interval);
+  }, [refreshKey]);
+
+  if (!stats) return <p>Loading stats...</p>;
 
   return (
     <div>
-      <h3>Statistics</h3>
-      <p>Total Cases: {stats.total_cases}</p>
+      <h3>📊 Live Statistics</h3>
 
-      <ul>
-        {Object.entries(stats.disease_distribution).map(([d, c]) => (
-          <li key={d}>{d}: {c}</li>
-        ))}
-      </ul>
+      {/* 🔥 Total Cases Card */}
+      <div style={card}>
+        <h4>Total Cases</h4>
+        <p style={{ fontSize: "24px", fontWeight: "bold" }}>
+          {stats.total_cases}
+        </p>
+      </div>
+
+      {/* 🔥 Disease Distribution */}
+      <div style={card}>
+        <h4>Disease Distribution</h4>
+
+        {Object.keys(stats.disease_distribution).length === 0 ? (
+          <p>No data yet</p>
+        ) : (
+          <ul>
+            {Object.entries(stats.disease_distribution).map(([d, c]) => (
+              <li key={d}>
+                {d}: <b>{c}</b>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }
+
+const card = {
+  background: "#111827",
+  padding: "15px",
+  borderRadius: "10px",
+  marginTop: "10px"
+};
 
 export default Stats;

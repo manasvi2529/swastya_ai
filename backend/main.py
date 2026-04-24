@@ -1,4 +1,6 @@
-from fastapi import FastAPI
+from typing import Optional
+
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -22,57 +24,106 @@ app.add_middleware(
 init_db()
 
 # ==============================
-# 🔥 Input model (UPDATED)
+# 🔥 In-memory Voting + Feedback
+# ==============================
+votes_data = {
+    "yes": 0,
+    "no": 0,
+    "severity": {
+        "mild": 0,
+        "moderate": 0,
+        "severe": 0
+    }
+}
+
+feedback_data = {
+    "correct": 0,
+    "incorrect": 0
+}
+
+# ==============================
+# 🔥 Input Models
 # ==============================
 class UserInput(BaseModel):
     symptoms: list
-    location: list  # [lat, lon]
+    location: Optional[list] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+
+    def coordinates(self):
+        if self.location is not None:
+            if len(self.location) != 2:
+                raise HTTPException(status_code=400, detail="location must be [lat, lon]")
+            return float(self.location[0]), float(self.location[1])
+
+        if self.latitude is not None and self.longitude is not None:
+            return float(self.latitude), float(self.longitude)
+
+        raise HTTPException(status_code=400, detail="Send location or lat/lon")
+
+
+class VoteInput(BaseModel):
+    vote: str
+    severity: str
+
+
+class FeedbackInput(BaseModel):
+    correct: bool
+
 
 # ==============================
-# 🔥 Static hospital list
+# 🔥 Hospitals
 # ==============================
 hospitals = [
     {"name": "AIIMS Delhi", "lat": 28.567, "lon": 77.210},
     {"name": "Apollo Hospital", "lat": 28.535, "lon": 77.241},
-    {"name": "Fortis Hospital", "lat": 28.567, "lon": 77.243}
+    {"name": "Fortis Hospital", "lat": 28.567, "lon": 77.243},
+    {"name": "Max Hospital", "lat": 28.567, "lon": 77.240},
+    {"name": "Safdarjung Hospital", "lat": 28.570, "lon": 77.207},
+    {"name": "BLK Hospital", "lat": 28.643, "lon": 77.189},
+    {"name": "RML Hospital", "lat": 28.634, "lon": 77.202}
 ]
 
 def get_nearest_hospitals(user_lat, user_lon):
     def distance(h):
         return ((user_lat - h["lat"])**2 + (user_lon - h["lon"])**2) ** 0.5
+
     return sorted(hospitals, key=distance)[:3]
 
+
 # ==============================
-# ✅ 1. SUBMIT API (FIXED)
-# ==============================
+# ✅ SUBMIT
+# ============================== 
 @app.post("/submit")
 def submit(data: UserInput):
     symptoms = data.symptoms
-    lat, lon = data.location
+    lat, lon = data.coordinates()
 
-    result = predict_disease(symptoms)
+    disease, probability = predict_disease(symptoms)
 
-    # 🔥 FIX
-    if isinstance(result, tuple):
-        disease = result[0]
-        probability = result[1]
-    else:
-        disease = result
-        probability = 0.85
+    # 🔥 HARD SAFETY (FINAL CLEAN)
+    if not disease:
+        disease = "Unknown"
 
-    risk = "Low"
-    if "fever" in symptoms:
-        risk = "Medium"
+    if probability is None or probability == 0:
+        probability = 0.6
 
     insert_case(symptoms, lat, lon, disease, probability)
 
+    cases = fetch_all_cases()
+    clusters = detect_clusters(cases)
+    risk = calculate_risk(clusters)
+
+    nearby_hospitals = get_nearest_hospitals(lat, lon)
+
     return {
         "predicted_disease": disease,
-        "risk": risk
+        "confidence": probability,
+        "risk": risk,
+        "nearby_hospitals": nearby_hospitals
     }
-
 # ==============================
-# ✅ 2. GET DATA (MAP)
+# ✅ MAP DATA
 # ==============================
 @app.get("/get-data")
 def get_data():
@@ -87,58 +138,48 @@ def get_data():
         for c in cases
     ]
 
+
 # ==============================
-# ✅ 3. CLUSTERS API
+# ✅ CLUSTERS
 # ==============================
 @app.get("/clusters")
 def get_clusters():
     cases = fetch_all_cases()
-
     clusters = detect_clusters(cases)
 
     result = []
 
     for c in clusters:
-     size = c["size"]
+        size = c["size"]
 
-    # 🔥 Risk logic
-     if size >= 10:
-        risk = "High"
-     elif size >= 5:
-        risk = "Medium"
-     else:
-        risk = "Low"
+        if size >= 10:
+            risk = "High"
+            color = "red"
+            alert = "🚨 High outbreak detected"
+        elif size >= 5:
+            risk = "Medium"
+            color = "yellow"
+            alert = "⚠️ Moderate outbreak"
+        else:
+            risk = "Low"
+            color = "green"
+            alert = "Normal"
 
-    # 🔥 Alert logic (IMPROVED)
-     if size >= 10:
-        alert = "🚨 High outbreak detected"
-     elif size >= 5:
-        alert = "⚠️ Moderate outbreak"
-     else:
-        alert = "Normal"
-
-    # 🔥 Color for map
-     if risk == "High":
-        color = "red"
-     elif risk == "Medium":
-        color = "yellow"
-     else:
-        color = "green"
-
-     result.append({
-        "disease": c["disease"],
-        "size": size,
-        "lat": c["lat"],
-        "lon": c["lon"],
-        "risk": risk,
-        "alert": alert,
-        "color": color
-    })
+        result.append({
+            "disease": c["disease"],
+            "size": size,
+            "lat": c["lat"],
+            "lon": c["lon"],
+            "risk": risk,
+            "alert": alert,
+            "color": color
+        })
 
     return result
 
+
 # ==============================
-# ✅ 4. ALERT API
+# ✅ ALERT
 # ==============================
 @app.get("/alert")
 def get_alert():
@@ -153,8 +194,9 @@ def get_alert():
     else:
         return {"alert": "✅ Area is safe"}
 
+
 # ==============================
-# ✅ 5. STATS API
+# ✅ STATS
 # ==============================
 @app.get("/stats")
 def get_stats():
@@ -170,44 +212,54 @@ def get_stats():
         "disease_distribution": disease_count
     }
 
-# ==============================
-# ✅ 6. RECENT API
-# ==============================
-@app.get("/recent")
-def get_recent():
-    cases = fetch_all_cases(limit=10)
-
-    return [
-        {
-            "lat": c["lat"],
-            "lon": c["lon"],
-            "disease": c["disease"],
-            "time": c["timestamp"]
-        }
-        for c in cases
-    ]
 
 # ==============================
-# ✅ 7. CLEAR API
+# ✅ VOTE
 # ==============================
-@app.delete("/clear")
-def clear_data():
-    try:
-        conn = get_connection()
-        cursor = conn.cursor()
+@app.post("/vote")
+def vote(data: VoteInput):
+    if data.vote not in ["yes", "no"]:
+        raise HTTPException(status_code=400, detail="Invalid vote")
 
-        cursor.execute("SELECT COUNT(*) FROM cases")
-        count = cursor.fetchone()[0]
+    votes_data[data.vote] += 1
 
-        cursor.execute("DELETE FROM cases")
+    if data.severity in votes_data["severity"]:
+        votes_data["severity"][data.severity] += 1
 
-        conn.commit()
-        conn.close()
+    return {
+        "message": "Vote recorded",
+        "votes": votes_data
+    }
 
-        return {
-            "message": "All data cleared",
-            "deleted_records": count
-        }
 
-    except Exception as e:
-        return {"error": str(e)}
+# ==============================
+# ✅ FEEDBACK
+# ==============================
+class FeedbackInput(BaseModel):
+    correct: bool
+
+
+@app.post("/feedback")
+def feedback(data: FeedbackInput):
+    if data.correct:
+        feedback_data["correct"] += 1
+    else:
+        feedback_data["incorrect"] += 1
+
+    return {"message": "Feedback recorded"}
+
+
+@app.get("/feedback-stats")
+def feedback_stats():
+    total = feedback_data["correct"] + feedback_data["incorrect"]
+
+    if total == 0:
+        trust = 0.5
+    else:
+        trust = feedback_data["correct"] / total
+
+    return {
+        "correct": feedback_data["correct"],
+        "incorrect": feedback_data["incorrect"],
+        "trust_score": trust
+    }

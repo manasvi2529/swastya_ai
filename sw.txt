@@ -1,617 +1,696 @@
-Got it — your idea is actually very strong, but in a 2-day hackathon you must NOT build everything fully. You need a smart MVP (Minimum Viable Product) that looks complete + works logically.
-
-I’ll give you a step-by-step execution plan (2 days) + what exactly to build + tools + shortcuts.
-
-🔥 FIRST: Understand Your Core Flow (VERY IMPORTANT)
-
-From your PPT (page 3 workflow) :
-
-👉 User Input → AI Model → Cluster Detection → Risk Score → Alert → Action
-
-This is your backbone.
-You only need to make this flow visible + working (even if simplified).
-
-⚡ DAY 1 — BUILD CORE BACKEND + LOGIC
-🧩 Step 1: Define MVP Features (Don’t overbuild)
-
-You will ONLY build:
-
-Symptom input form
-Disease prediction (basic ML / rule-based)
-Location tagging
-Simple clustering (fake or DBSCAN)
-Risk score
-Alert system
-Heatmap (very important for judges)
-🛠 Step 2: Backend Setup (FAST)
-Tools:
-Python
-FastAPI (as in your PPT)
-Uvicorn
-Why:
-Super fast API creation
-Easy to connect ML logic
-🧠 Step 3: Disease Prediction (DON’T overcomplicate)
-
-From your idea (page 4): Naive Bayes
-
-👉 BUT in hackathon:
-👉 Use rule-based + simple scoring (FASTER + safer)
-
-Example logic:
-if "diarrhea" and "vomiting":
-    return "Cholera"
-elif "fever" and "headache":
-    return "Viral Infection"
-
-👉 You already started this (good move 👍)
-
-📍 Step 4: Location + Data Storage
-Tools:
-Simple JSON / SQLite (DON’T use heavy DB)
-Store:
-{
-  "symptoms": ["fever", "diarrhea"],
-  "location": [lat, long],
-  "disease": "Cholera"
-}
-📊 Step 5: Cluster Detection (Important USP)
-
-From PPT: DBSCAN
-
-👉 Use:
-
-sklearn.cluster.DBSCAN
-Idea:
-Group nearby cases
-If many same disease → outbreak
-⚠️ Step 6: Risk Score (Make it simple but smart)
-
-Formula:
-
-Risk = (number_of_cases × severity_weight) / area
-
-Then:
-
-Low → Green
-Medium → Yellow
-High → Red
-🚨 Step 7: Alert Logic
-
-If:
-
-cluster size > threshold
-→ trigger alert
-
-Return:
-
-{
-  "alert": "High risk outbreak detected",
-  "area": "XYZ",
-  "cases": 15
-}
-⚡ DAY 2 — FRONTEND + VISUAL IMPACT
-🎨 Step 8: Frontend (React OR simple HTML)
-BEST CHOICE (fastest):
-
-👉 Use React + Tailwind OR just plain HTML + JS
-
-🧾 Step 9: Pages (From your UI slide page 7)
-
-Build ONLY 3 pages:
-
-1. Symptom Input Page
-Checkbox symptoms
-Location input
-2. Dashboard
-Show:
-Predicted disease
-Risk level
-Alerts
-3. Map Page (🔥 MOST IMPORTANT)
-Show outbreak heatmap
-🗺 Step 10: Heatmap (YOUR WINNING FEATURE)
-Tools:
-Leaflet.js OR Mapbox
-
-👉 Use Leaflet (simpler)
-
-Show:
-Points → cases
-Red zones → outbreak
-📈 Step 11: Graphs
-Tools:
-Chart.js
-
-Show:
-
-Cases over time
-Disease distribution
-🤖 Step 12: Add “AI Chatbot” (Fake but smart)
-
-From PPT USP (page 5)
-
-👉 Don’t build real AI
-👉 Just predefined responses:
-
-Example:
-User: “I have fever”
-Bot: “Stay hydrated and consult doctor”
-
-⚡ FINAL ARCHITECTURE (KEEP SIMPLE)
-Frontend (React / HTML)
-        ↓
-FastAPI Backend
-        ↓
-ML Logic (rule-based + DBSCAN)
-        ↓
-SQLite / JSON
-🎯 WHAT JUDGES WILL LOVE
-
-You MUST highlight:
-
-✅ Real-time outbreak detection
-✅ Heatmap visualization
-✅ Works in rural areas (your strong point)
-✅ Simple + scalable AI
-
-🚀 EXTRA (IF TIME LEFT)
-Add fake SMS alert
-Add hospital suggestion
-Add “water contamination zone” toggle
-⚠️ IMPORTANT STRATEGY (READ THIS)
-
-Don’t try to build:
-❌ Perfect ML model
-❌ Complex database
-❌ Full authentication
-
-Instead:
-✔ Focus on working demo + visuals + flow
-
-💡 FINAL HACKATHON SCRIPT
-
-When presenting say:
-
-👉 “Even with minimal data, our system can detect early outbreak signals and alert authorities before spread.”
-
-✅ If you want next
-
-I can give you:
-
-🔥 Ready backend code (FastAPI + prediction + clustering)
-🔥 React UI template
-🔥 Map + heatmap code
-🔥 Winning pitch script
-
-Just say: “Give me code”Perfect. Step 1 is where most people mess up by trying to build everything. We won’t. We’ll define a laser-focused MVP that you can actually finish in 2 days and still impress judges.
-
-🔥 STEP 1: DEFINE YOUR MVP (CRITICAL)
-
-Based on your PPT (especially the workflow on page 3)
-👉 Your system has many features, but your MVP should feel like this:
-
-🎯 ONE-LINE MVP GOAL:
-
-👉 “Detect possible disease + identify outbreak clusters + show risk on map.”
-
-🧩 CORE FEATURES (ONLY THESE 5)
-1️⃣ Symptom Input
-
-User enters:
-
-Symptoms (checkbox)
-Location (manual or GPS)
-
-👉 Output:
-
-Data goes to backend
-2️⃣ Disease Prediction (Basic AI)
-
-Input:
-
-Symptoms
-
-Output:
-
-Disease name (Cholera / Viral / Typhoid)
-
-👉 Keep it:
-
-Rule-based (fast + reliable)
-3️⃣ Data Storage
-
-Every user entry gets saved:
-
-Symptoms
-Location
-Predicted disease
-
-👉 This builds your “dataset”
-
-4️⃣ Cluster Detection (🔥 USP)
-
-System checks:
-
-Are multiple cases happening nearby?
-
-👉 If YES:
-
-Mark it as cluster
-5️⃣ Risk + Alert System
-
-If cluster detected:
-
-Show:
-Risk level (Low / Medium / High)
-Alert message
-6️⃣ Heatmap Visualization (MOST IMPORTANT)
-
-👉 This is what wins hackathons
-
-Show:
-
-Red zones = high cases
-Green zones = safe
-❌ WHAT YOU WILL NOT BUILD (IMPORTANT)
-
-Remove these NOW:
-
-❌ Full ML training
-❌ Real hospital integration
-❌ IoT sensors
-❌ Login system
-❌ Complex chatbot
-
-👉 These are nice-to-have, not MVP
-
-🧠 FINAL MVP FLOW (VERY CLEAR)
-User enters symptoms + location
-        ↓
-Backend predicts disease
-        ↓
-Data stored
-        ↓
-Cluster detection runs
-        ↓
-Risk calculated
-        ↓
-Map updated (heatmap)
-        ↓
-Alert shown
-🎯 YOUR EXACT FEATURE LIST (LOCK THIS)
-
-✅ Input form
-✅ Prediction logic
-✅ Store data
-✅ Cluster detection
-✅ Risk scoring
-✅ Heatmap
-✅ Alert message
-
-👉 That’s it. This is your project.
-
-💡 QUICK DECISION (ANSWER THIS)
-
-Before moving to Step 2, tell me:
-
-👉 Do you want:
-
-SUPER SIMPLE VERSION (guaranteed working demo)
-MODERATE VERSION (better but slightly risky)
-
-Once you answer, I’ll move to Step 2: Backend Setup + Folder Structure + Starter Code 🚀Good — now we move from “idea” to execution mode.
-With 4 people and 2 days, the only way to win is parallel work + clear ownership.
-
-🚀 HOW TO START (FIRST 2 HOURS)
-⏱ Hour 0–1: Alignment (ALL 4 TOGETHER)
-
-Do this before coding anything:
-
-✅ Finalize MVP (from Step 1)
-
-Lock:
-
-Symptoms → Prediction → Cluster → Risk → Heatmap → Alert
-✅ Decide Tech Stack (already in your PPT page 4)
-Frontend: React (or HTML if needed)
-Backend: FastAPI
-ML: Rule-based + DBSCAN
-Map: Leaflet
-✅ Create GitHub Repo
-
-Structure:
-
-/frontend
-/backend
-/data
-⏱ Hour 1–2: Task Division + Setup
-
-Each person sets up their environment.
-
-👥 PERFECT TEAM DIVISION (4 PEOPLE)
-🧑‍💻 PERSON 1 — BACKEND + API (CORE ENGINE)
-Responsibilities:
-FastAPI setup
-API endpoints:
-/predict
-/submit
-/get-data
-Connect ML + storage
-Tools:
-FastAPI
-Python
-Uvicorn
-Output:
-
-👉 Running API server
-
-🧠 PERSON 2 — ML + LOGIC (BRAIN)
-Responsibilities:
-Disease prediction logic
-Cluster detection (DBSCAN or simple grouping)
-Risk scoring
-Tools:
-Python
-sklearn (optional)
-Numpy
-Output:
-
-👉 Functions like:
-
-predict_disease()
-detect_cluster()
-calculate_risk()
-🎨 PERSON 3 — FRONTEND UI (FACE)
-Responsibilities:
-Input form
-Dashboard UI
-Alert display
-Tools:
-React OR HTML/CSS/JS
-Tailwind (optional)
-Output:
-
-👉 Working UI (even if dummy initially)
-
-🗺 PERSON 4 — MAP + VISUALIZATION (WOW FACTOR)
-Responsibilities:
-Heatmap
-Map integration
-Graphs
-Tools:
-Leaflet.js
-Chart.js
-Output:
-
-👉 Map showing cases + heat zones
-
-🔗 HOW THEY CONNECT (VERY IMPORTANT)
-🔄 Data Flow:
-Frontend → Backend API → ML Logic → Database → Map/UI
-🧩 INTEGRATION PLAN (DON’T SKIP)
-🔥 End of Day 1:
-
-You MUST have:
-
-Backend working
-Prediction working
-Frontend form ready
-🔥 Day 2 Morning:
-Connect frontend ↔ backend
-Store real data
-🔥 Day 2 Afternoon:
-Add map + heatmap
-Show alerts
-⚠️ COMMON MISTAKE (DON’T DO THIS)
-
-❌ Everyone working on same file
-❌ Waiting for one person to finish
-❌ Overcomplicating ML
-
-👉 Instead:
-✔ Work independently
-✔ Use dummy data initially
-✔ Integrate later
-
-🧠 SMART WORKFLOW (PRO LEVEL)
-Parallel Work Strategy:
-Person	Start With
-Backend	Dummy API returning fixed data
-ML	Functions separately
-Frontend	Static UI
-Map	Static coordinates
-
-👉 Then integrate everything
-
-🎯 DAILY PLAN
-DAY 1
-Backend ready ✅
-ML logic ready ✅
-UI basic ready ✅
-Map basic ready ✅
-DAY 2
-Connect everything 🔥
-Add alerts 🔥
-Polish UI 🔥
-💡 BONUS (WINNING EDGE)
-
-Assign 1 person (part-time role):
-👉 “Pitch + Demo Manager”
-
-They will:
-
-Prepare explanation
-Handle presentation
-Explain flow confidently
-🧨 FINAL RULE
-
-👉 Working demo > Perfect code
-
-✅ NEXT STEP
-
-If you're ready, I’ll give:
-
-👉 🔥 Exact folder structure + starter code for all 4 roles
-👉 🔥 API endpoints ready to copy
-👉 🔥 Fast integration plan
-
-Just say: “Step 2 code”Good — this is exactly where you should be at this stage.
-
-From your screenshot I can see:
-
-FastAPI is running (127.0.0.1:8000)
-/submit endpoint is working
-Data is being stored (IDs incrementing)
-Disease prediction is working (Cholera)
-Lat/Lon is being saved
-Timestamp is being generated
-
-👉 That means Person 1 (Backend) and Person 2 (ML logic) are already ~60–70% done.
-
-Now don’t slow down here. Move to integration + clustering + frontend immediately.
-
-🔥 WHAT YOU SHOULD DO NEXT (RIGHT NOW)
-1️⃣ Add /get-data endpoint (if not clean already)
-
-You need a simple API that returns all cases:
-
+main.py of backend = from typing import Optional
+
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
+
+from model import predict_disease
+from database import insert_case, fetch_all_cases, init_db, get_connection
+from cluster import detect_clusters, calculate_risk
+
+app = FastAPI()
+
+# ==============================
+# 🔥 Enable CORS
+# ==============================
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+init_db()
+
+# ==============================
+# 🔥 Reset DB on start (DEMO ONLY)
+# ==============================
+def clear_db_on_start():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM cases")
+    conn.commit()
+    conn.close()
+
+# Keep the database as the source of truth across server restarts.
+
+# ==============================
+# 🔥 Input model
+# ==============================
+class UserInput(BaseModel):
+    symptoms: list
+    location: Optional[list] = None  # [lat, lon]
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+
+    def coordinates(self):
+        if self.location is not None:
+            if len(self.location) != 2:
+                raise HTTPException(status_code=400, detail="location must be [lat, lon]")
+            return float(self.location[0]), float(self.location[1])
+
+        if self.latitude is not None and self.longitude is not None:
+            return float(self.latitude), float(self.longitude)
+
+        raise HTTPException(status_code=400, detail="Send either location: [lat, lon] or latitude/longitude")
+
+# ==============================
+# 🔥 Expanded hospital list
+# ==============================
+hospitals = [
+    {"name": "AIIMS Delhi", "lat": 28.567, "lon": 77.210},
+    {"name": "Apollo Hospital", "lat": 28.535, "lon": 77.241},
+    {"name": "Fortis Hospital", "lat": 28.567, "lon": 77.243},
+    {"name": "Max Hospital", "lat": 28.567, "lon": 77.240},
+    {"name": "Safdarjung Hospital", "lat": 28.570, "lon": 77.207},
+    {"name": "BLK Hospital", "lat": 28.643, "lon": 77.189},
+    {"name": "RML Hospital", "lat": 28.634, "lon": 77.202}
+]
+
+# ==============================
+# 🔥 Nearest hospitals logic
+# ==============================
+def get_nearest_hospitals(user_lat, user_lon):
+    def distance(h):
+        return ((user_lat - h["lat"])**2 + (user_lon - h["lon"])**2) ** 0.5
+
+    sorted_h = sorted(hospitals, key=distance)
+    return sorted_h[:3]
+
+# ==============================
+# ✅ 1. SUBMIT API
+# ==============================
+@app.post("/submit")
+def submit(data: UserInput):
+    symptoms = data.symptoms
+    lat, lon = data.coordinates()
+
+    disease, probability = predict_disease(symptoms)
+
+    # Store case
+    insert_case(symptoms, lat, lon, disease, probability)
+    print(f"[submit] stored case disease={disease} lat={lat} lon={lon}")
+
+    # Cluster-based risk
+    cases = fetch_all_cases()
+    clusters = detect_clusters(cases)
+    risk = calculate_risk(clusters)
+
+    # Nearby hospitals
+    nearby_hospitals = get_nearest_hospitals(lat, lon)
+
+    return {
+        "predicted_disease": disease,
+        "disease": disease,
+        "confidence": probability,
+        "risk": risk,
+        "nearby_hospitals": nearby_hospitals
+    }
+
+# ==============================
+# ✅ 2. GET DATA (MAP)
+# ==============================
 @app.get("/get-data")
 def get_data():
-    return data_store
+    cases = fetch_all_cases()
+    print(f"[get-data] returning {len(cases)} cases")
 
-👉 This will feed your map.
+    return [
+        {
+            "lat": c["lat"],
+            "lon": c["lon"],
+            "disease": c["disease"]
+        }
+        for c in cases
+    ]
 
-2️⃣ Add CLUSTER DETECTION (VERY IMPORTANT NEXT STEP)
-
-Person 2 should now implement clustering.
-
-Install:
-pip install scikit-learn
-Code (simple DBSCAN):
-from sklearn.cluster import DBSCAN
-import numpy as np
-
-def detect_clusters(data):
-    coords = np.array([[d["lat"], d["lon"]] for d in data])
-
-    if len(coords) < 3:
-        return []
-
-    clustering = DBSCAN(eps=0.01, min_samples=2).fit(coords)
-
-    labels = clustering.labels_
-
-    clusters = []
-    for i, label in enumerate(labels):
-        if label != -1:
-            clusters.append({
-                "lat": data[i]["lat"],
-                "lon": data[i]["lon"],
-                "cluster": int(label)
-            })
-
-    return clusters
-3️⃣ Create NEW endpoint /clusters
+# ==============================
+# ✅ 3. CLUSTERS API
+# ==============================
 @app.get("/clusters")
 def get_clusters():
-    clusters = detect_clusters(data_store)
-    return clusters
-4️⃣ ADD RISK SCORE (Quick Win)
+    cases = fetch_all_cases()
+    clusters = detect_clusters(cases)
+    print(f"[clusters] cases={len(cases)} clusters={len(clusters)}")
 
-Inside cluster logic:
+    result = []
 
-def calculate_risk(cluster_size):
-    if cluster_size < 3:
+    for c in clusters:
+        size = c["size"]
+
+        # Risk
+        if size >= 10:
+            risk = "High"
+        elif size >= 5:
+            risk = "Medium"
+        else:
+            risk = "Low"
+
+        # Alert
+        if size >= 10:
+            alert = "🚨 High outbreak detected"
+        elif size >= 5:
+            alert = "⚠️ Moderate outbreak"
+        else:
+            alert = "Normal"
+
+        # Color (for map)
+        color = "green"
+        if risk == "Medium":
+            color = "yellow"
+        elif risk == "High":
+            color = "red"
+
+        result.append({
+            "disease": c["disease"],
+            "size": size,
+            "lat": c["lat"],
+            "lon": c["lon"],
+            "risk": risk,
+            "alert": alert,
+            "color": color
+        })
+
+    return result
+
+# ==============================
+# ✅ 4. ALERT API
+# ==============================
+@app.get("/alert")
+def get_alert():
+    cases = fetch_all_cases()
+    clusters = detect_clusters(cases)
+    risk = calculate_risk(clusters)
+
+    if risk == "High":
+        return {"alert": "🚨 High outbreak risk detected!"}
+    elif risk == "Medium":
+        return {"alert": "⚠️ Moderate risk area"}
+    else:
+        return {"alert": "✅ Area is safe"}
+
+# ==============================
+# ✅ 5. STATS API
+# ==============================
+@app.get("/stats")
+def get_stats():
+    cases = fetch_all_cases()
+
+    disease_count = {}
+    for c in cases:
+        d = c["disease"]
+        disease_count[d] = disease_count.get(d, 0) + 1
+
+    return {
+        "total_cases": len(cases),
+        "disease_distribution": disease_count
+    }
+
+# ==============================
+# ✅ 6. RECENT API
+# ==============================
+@app.get("/recent")
+def get_recent():
+    cases = fetch_all_cases(limit=10)
+
+    return [
+        {
+            "lat": c["lat"],
+            "lon": c["lon"],
+            "disease": c["disease"],
+            "time": c["timestamp"]
+        }
+        for c in cases
+    ]
+
+# ==============================
+# ✅ 7. CLEAR API
+# ==============================
+@app.delete("/clear")
+def clear_data():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM cases")
+
+    conn.commit()
+    conn.close()
+
+    return {"message": "All data cleared"}
+, cluster.py(backend)=from sklearn.cluster import DBSCAN
+import numpy as np
+
+
+# ==============================
+# ✅ Detect clusters (per disease)
+# ==============================
+def detect_clusters(cases):
+    if not cases or len(cases) < 2:
+        return []
+
+    clusters_result = []
+
+    # 🔥 Group cases by disease
+    disease_groups = {}
+    for case in cases:
+        disease = case.get("disease")
+        if not disease:
+            continue
+
+        disease_groups.setdefault(disease, []).append(case)
+
+    # 🔥 Run DBSCAN for each disease separately
+    for disease, group in disease_groups.items():
+
+        if len(group) < 2:
+            continue
+
+        try:
+            coords = np.array([[c["lat"], c["lon"]] for c in group])
+        except KeyError:
+            continue  # skip bad data safely
+
+        # 🔥 DBSCAN model (tuned for city-level clustering)
+        model = DBSCAN(eps=0.02, min_samples=2)
+        labels = model.fit_predict(coords)
+
+        temp_clusters = {}
+
+        for i, label in enumerate(labels):
+            if label == -1:
+                continue  # ignore noise
+
+            temp_clusters.setdefault(label, []).append(group[i])
+
+        # 🔥 Build final cluster output
+        for cluster_cases in temp_clusters.values():
+
+            size = len(cluster_cases)
+
+            # 👉 Calculate cluster center (IMPORTANT for map)
+            avg_lat = sum(c["lat"] for c in cluster_cases) / size
+            avg_lon = sum(c["lon"] for c in cluster_cases) / size
+
+            clusters_result.append({
+                "disease": disease,
+                "size": size,
+                "lat": round(avg_lat, 5),
+                "lon": round(avg_lon, 5),
+                "cases": cluster_cases
+            })
+
+    return clusters_result
+
+
+# ==============================
+# ✅ Calculate risk (IMPROVED)
+# ==============================
+def calculate_risk(clusters):
+
+    if not clusters:
         return "Low"
-    elif cluster_size < 6:
+
+    max_cluster = max(c["size"] for c in clusters)
+
+    # 🔥 More realistic thresholds
+    if max_cluster >= 10:
+        return "High"
+    elif max_cluster >= 5:
         return "Medium"
     else:
-        return "High"
-5️⃣ NOW FRONTEND PEOPLE START
-Person 3 (UI):
+        return "Low",C:\Users\Imad Ahmed\swastya_ai\backend\database.py=import sqlite3
+from datetime import datetime
+from pathlib import Path
 
-Create simple form:
+DB_NAME = Path(__file__).resolve().parent / "epiguard.db"
 
-<input type="checkbox" value="fever">
-<input type="checkbox" value="diarrhea">
-<input type="number" placeholder="latitude">
-<input type="number" placeholder="longitude">
-<button>Submit</button>
 
-Call API:
+# ==============================
+# ✅ Get DB connection
+# ==============================
+def get_connection():
+    conn = sqlite3.connect(DB_NAME)
+    conn.row_factory = sqlite3.Row  # 🔥 makes rows behave like dict
+    return conn
 
-POST /submit
-6️⃣ PERSON 4 → MAP (START NOW)
 
-Use:
-👉 Leaflet
+# ==============================
+# ✅ Initialize DB
+# ==============================
+def init_db():
+    conn = get_connection()
+    cursor = conn.cursor()
 
-Minimal map:
-<div id="map" style="height: 500px;"></div>
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS cases (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        symptoms TEXT,
+        latitude REAL,
+        longitude REAL,
+        disease TEXT,
+        probability REAL,
+        timestamp TEXT
+    )
+    """)
 
-<script>
-var map = L.map('map').setView([28.61, 77.23], 10);
+    conn.commit()
+    conn.close()
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-</script>
-7️⃣ CONNECT MAP WITH BACKEND
 
-Fetch data:
+# ==============================
+# ✅ Insert new case
+# ==============================
+def insert_case(symptoms, lat, lon, disease, probability):
+    conn = get_connection()
+    cursor = conn.cursor()
 
-fetch("http://127.0.0.1:8000/get-data")
-.then(res => res.json())
-.then(data => {
-    data.forEach(d => {
-        L.circle([d.lat, d.lon], {
-            color: 'red'
-        }).addTo(map);
-    });
-});
-⚠️ IMPORTANT TEST YOU SHOULD RUN
+    cursor.execute("""
+    INSERT INTO cases (symptoms, latitude, longitude, disease, probability, timestamp)
+    VALUES (?, ?, ?, ?, ?, ?)
+    """, (
+        ",".join(symptoms),
+        lat,
+        lon,
+        disease,
+        probability,
+        datetime.now().isoformat()
+    ))
 
-Do this NOW:
+    conn.commit()
+    conn.close()
 
-👉 Submit same symptoms + nearby locations 6–10 times
 
-Example:
+# ==============================
+# ✅ Fetch ALL cases
+# ==============================
+def fetch_all_cases(limit=None):
+    conn = get_connection()
+    cursor = conn.cursor()
 
-{
-  "symptoms": ["diarrhea", "vomiting"],
-  "latitude": 28.61,
-  "longitude": 77.23
+    if limit is None:
+        cursor.execute("SELECT * FROM cases ORDER BY id ASC")
+    else:
+        cursor.execute("SELECT * FROM cases ORDER BY id DESC LIMIT ?", (limit,))
+    rows = cursor.fetchall()
+
+    conn.close()
+
+    cases = []
+    for row in rows:
+        cases.append({
+            "id": row["id"],
+            "symptoms": row["symptoms"].split(","),
+            "lat": row["latitude"],
+            "lon": row["longitude"],
+            "disease": row["disease"],
+            "probability": row["probability"],
+            "timestamp": row["timestamp"]
+        })
+
+    return cases
+
+
+# ==============================
+# ✅ Fetch recent cases (optional 🔥)
+# ==============================
+def fetch_recent_cases(minutes=60):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    SELECT * FROM cases
+    WHERE timestamp >= datetime('now', ?)
+    """, (f"-{minutes} minutes",))
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    cases = []
+    for row in rows:
+        cases.append({
+            "id": row["id"],
+            "symptoms": row["symptoms"].split(","),
+            "lat": row["latitude"],
+            "lon": row["longitude"],
+            "disease": row["disease"],
+            "probability": row["probability"],
+            "timestamp": row["timestamp"]
+        })
+
+    return cases
+, if u need any more file from backend tell me, now for frontend i m giving import { useEffect, useState } from "react";
+
+function Alert({ refreshKey }) {
+  const [alert, setAlert] = useState("");
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/alert")
+      .then(res => res.json())
+      .then(data => setAlert(data.alert));
+  }, [refreshKey]);
+
+  return (
+    <div style={{ textAlign: "center", fontSize: "20px" }}>
+      {alert}
+    </div>
+  );
 }
 
-👉 Then slightly change lat/lon:
+export default Alert;
+,import { useState } from "react";
 
-28.611, 77.231
-28.612, 77.232
+function Form({ setResult, onSubmitted }) {
+  const [symptoms, setSymptoms] = useState([]);
+  const [lat, setLat] = useState(28.61);
+  const [lon, setLon] = useState(77.23);
+  const [submitting, setSubmitting] = useState(false);
 
-👉 This will create a cluster
+  const allSymptoms = ["fever", "diarrhea", "vomiting", "cough"];
 
-🔥 WHAT YOU WILL SEE
-Same disease repeated
-Close coordinates
-Cluster detected
+  const handleCheckbox = (symptom) => {
+    if (symptoms.includes(symptom)) {
+      setSymptoms(symptoms.filter(s => s !== symptom));
+    } else {
+      setSymptoms([...symptoms, symptom]);
+    }
+  };
 
-👉 THIS = YOUR DEMO STORY
+  const submitData = async () => {
+    if (submitting) return;
+    if (symptoms.length === 0) {
+      alert("Select at least one symptom");
+      return;
+    }
 
-🎯 CURRENT STATUS
-Module	Status
-Backend API	✅ Done
-Prediction	✅ Done
-Data Storage	✅ Done
-Clustering	⏳ Next
-Frontend	⏳ Start
-Map	⏳ Start
-🚀 NEXT MOVE
+    setSubmitting(true);
 
-Once you finish clustering + map, tell me:
+    try {
+      const res = await fetch("http://127.0.0.1:8000/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          symptoms,
+          location: [parseFloat(lat), parseFloat(lon)]
+        })
+      });
 
-👉 “Map done”
+      if (!res.ok) {
+        throw new Error(`Submit failed: ${res.status}`);
+      }
 
-Then I’ll give you:
+      const data = await res.json();
+      console.log("Submitted case:", data);
+      setResult(data);
+      onSubmitted?.();
+    } catch (err) {
+      console.error("Error submitting case:", err);
+      alert("Could not submit case. Check backend logs.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
-Heatmap upgrade (🔥 judges love this)
-Alert system popup
-Final demo script 🎤
+  return (
+    <div>
+      <h2>Enter Symptoms</h2>
+
+      {allSymptoms.map(s => (
+        <label key={s} style={{ display: "block" }}>
+          <input type="checkbox" onChange={() => handleCheckbox(s)} />
+          {s}
+        </label>
+      ))}
+
+      <br />
+
+      <input value={lat} onChange={(e) => setLat(e.target.value)} />
+      <input value={lon} onChange={(e) => setLon(e.target.value)} />
+
+      <br /><br />
+
+      <button onClick={submitData} disabled={submitting}>
+        {submitting ? "Submitting..." : "Predict"}
+      </button>
+    </div>
+  );
+}
+
+export default Form;
+,,function Result({ result }) {
+  if (!result) return null;
+
+  return (
+    <div>
+      <h3>Prediction Result</h3>
+
+      <p><b>Disease:</b> {result.predicted_disease}</p>
+      <p><b>Confidence:</b> {result.confidence.toFixed(2)}</p>
+      <p><b>Risk Level:</b> {result.risk}</p>
+
+      <h4>Nearby Hospitals:</h4>
+      <ul>
+        {result.nearby_hospitals.map((h, i) => (
+          <li key={i}>{h.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default Result;
+,import { useEffect, useState } from "react";
+
+function Stats({ refreshKey }) {
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/stats")
+      .then(res => res.json())
+      .then(data => setStats(data));
+  }, [refreshKey]);
+
+  if (!stats) return null;
+
+  return (
+    <div>
+      <h3>Statistics</h3>
+      <p>Total Cases: {stats.total_cases}</p>
+
+      <ul>
+        {Object.entries(stats.disease_distribution).map(([d, c]) => (
+          <li key={d}>{d}: {c}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default Stats;
+,import { useEffect, useRef } from "react";
+
+function MapPage() {
+  const mapRef = useRef(null);
+  const layerRef = useRef(null);
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://unpkg.com/leaflet/dist/leaflet.js";
+    document.body.appendChild(script);
+
+    script.onload = () => {
+      mapRef.current = window.L.map("map").setView([28.61, 77.20], 10);
+
+      window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 18
+      }).addTo(mapRef.current);
+
+      layerRef.current = window.L.layerGroup().addTo(mapRef.current);
+
+      loadMapData();
+    };
+
+    async function loadMapData() {
+      try {
+        // 🔥 Fetch BOTH APIs
+        const [clustersRes, casesRes] = await Promise.all([
+          fetch("http://127.0.0.1:8000/clusters"),
+          fetch("http://127.0.0.1:8000/get-data")
+        ]);
+
+        const clusters = await clustersRes.json();
+        const cases = await casesRes.json();
+
+        console.log("Clusters:", clusters);
+        console.log("Cases:", cases);
+
+        // 🔥 Clear old layers
+        layerRef.current.clearLayers();
+
+        // =========================
+        // 🔵 INDIVIDUAL CASES (BLUE)
+        // =========================
+        cases.forEach(c => {
+          window.L.circleMarker([c.lat, c.lon], {
+            radius: 5,
+            color: "blue",
+            fillColor: "blue",
+            fillOpacity: 0.7
+          })
+            .addTo(layerRef.current)
+            .bindPopup(`
+              🧍 Case<br>
+              Disease: ${c.disease}
+            `);
+        });
+
+        // =========================
+        // 🟡🔴 CLUSTERS (RISK)
+        // =========================
+        clusters.forEach(c => {
+          window.L.circle([c.lat, c.lon], {
+            color: c.color,
+            fillColor: c.color,
+            fillOpacity: 0.4,
+            radius: 5000 + c.size * 500   // bigger = more cases
+          })
+            .addTo(layerRef.current)
+            .bindPopup(`
+              <b>${c.disease}</b><br>
+              Cases: ${c.size}<br>
+              Risk: ${c.risk}<br>
+              ${c.alert}
+            `);
+        });
+
+      } catch (err) {
+        console.error("❌ Error loading map:", err);
+      }
+    }
+
+    // 🔥 AUTO REFRESH (REAL-TIME FEEL)
+    const interval = setInterval(() => {
+      if (mapRef.current) {
+        loadMapData();
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+
+  }, []);
+
+  return (
+    <div
+      id="map"
+      style={{
+        height: "450px",
+        borderRadius: "12px",
+        marginTop: "20px"
+      }}
+    ></div>
+  );
+}
+
+export default MapPage;

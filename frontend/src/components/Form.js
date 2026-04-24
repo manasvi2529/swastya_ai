@@ -1,9 +1,10 @@
 import { useState } from "react";
 
-function Form({ setResult }) {
+function Form({ setResult, onSubmitted }) {
   const [symptoms, setSymptoms] = useState([]);
   const [lat, setLat] = useState(28.61);
   const [lon, setLon] = useState(77.23);
+  const [submitting, setSubmitting] = useState(false);
 
   const allSymptoms = ["fever", "diarrhea", "vomiting", "cough"];
 
@@ -16,20 +17,40 @@ function Form({ setResult }) {
   };
 
   const submitData = async () => {
-    const res = await fetch("http://127.0.0.1:8000/submit", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        symptoms,
-        latitude: parseFloat(lat),
-        longitude: parseFloat(lon)
-      })
-    });
+    if (submitting) return;
+    if (symptoms.length === 0) {
+      alert("Select at least one symptom");
+      return;
+    }
 
-    const data = await res.json();
-    setResult(data);
+    setSubmitting(true);
+
+    try {
+      const res = await fetch("http://127.0.0.1:8000/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          symptoms,
+          location: [parseFloat(lat), parseFloat(lon)]
+        })
+      });
+
+      if (!res.ok) {
+        throw new Error(`Submit failed: ${res.status}`);
+      }
+
+      const data = await res.json();
+      console.log("Submitted case:", data);
+      setResult(data);
+      onSubmitted?.();
+    } catch (err) {
+      console.error("Error submitting case:", err);
+      alert("Could not submit case. Check backend logs.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -50,7 +71,9 @@ function Form({ setResult }) {
 
       <br /><br />
 
-      <button onClick={submitData}>Predict</button>
+      <button onClick={submitData} disabled={submitting}>
+        {submitting ? "Submitting..." : "Predict"}
+      </button>
     </div>
   );
 }
