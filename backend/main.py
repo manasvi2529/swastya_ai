@@ -3,6 +3,7 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 from model import predict_disease
 from database import insert_case, fetch_all_cases, init_db, get_connection
@@ -83,6 +84,33 @@ hospitals = [
     {"name": "BLK Hospital", "lat": 28.643, "lon": 77.189},
     {"name": "RML Hospital", "lat": 28.634, "lon": 77.202}
 ]
+
+class LocationInput(BaseModel):
+    lat: float
+    lon: float
+
+
+@app.post("/hospitals")
+def get_hospitals(data: LocationInput):
+    user_lat = data.lat
+    user_lon = data.lon
+
+    def distance(h):
+        return ((user_lat - h["lat"])**2 + (user_lon - h["lon"])**2) ** 0.5
+
+    sorted_hospitals = sorted(hospitals, key=distance)
+
+    result = []
+    for h in sorted_hospitals[:10]:
+        result.append({
+            "name": h["name"],
+            "lat": h["lat"],
+            "lon": h["lon"],
+            "phone": h.get("phone", "Not available"),
+            "distance": round(distance(h), 3)
+        })
+
+    return result
 
 def get_nearest_hospitals(user_lat, user_lon):
     def distance(h):
@@ -263,3 +291,42 @@ def feedback_stats():
         "incorrect": feedback_data["incorrect"],
         "trust_score": trust
     }
+# ==============================
+# 🔥 DOCTORS
+# ==============================
+
+doctors = [
+    {
+        "name": "Dr. Sharma",
+        "specialization": "General Physician",
+        "phone": "9876543210"
+    },
+    {
+        "name": "Dr. Mehta",
+        "specialization": "Cardiologist",
+        "phone": "9123456780"
+    },
+    {
+        "name": "Dr. Khan",
+        "specialization": "Dermatologist",
+        "phone": "9988776655"
+    }
+]
+@app.get("/doctors")
+def get_doctors(disease: str = None):
+
+    disease_map = {
+        "Flu": "General Physician",
+        "Dengue": "General Physician",
+        "Heart Disease": "Cardiologist",
+        "Skin Infection": "Dermatologist"
+    }
+
+    specialist = disease_map.get(disease, "General Physician")
+
+    filtered = [
+        d for d in doctors if d["specialization"] == specialist
+    ]
+
+    # Return the list directly (or a dictionary)
+    return filtered if filtered else doctors

@@ -191,11 +191,32 @@ function Prediction() {
           )}
 
           <h5>Nearby Hospitals:</h5>
-          <ul>
-            {result.nearby_hospitals?.map((h, i) => (
-              <li key={i}>{h.name}</li>
-            ))}
-          </ul>
+
+{result.nearby_hospitals?.slice(0, 3).map((h, i) => (
+  <div key={i} style={{
+    padding: "10px",
+    marginTop: "8px",
+    background: "#1e293b",
+    borderRadius: "8px"
+  }}>
+    🏥 {h.name}
+  </div>
+))}
+
+<button
+  style={{
+    marginTop: "12px",
+    padding: "10px",
+    background: "#2563eb",
+    color: "white",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer"
+  }}
+  onClick={() => window.location.href = "/hospitals"}
+>
+  View Details / Book Appointment →
+</button>
 
           {!feedbackSent ? (
             <div style={{ marginTop: "15px" }}>
