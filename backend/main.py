@@ -228,19 +228,10 @@ def get_alert():
 # ==============================
 @app.get("/stats")
 def get_stats():
-    cases = fetch_all_cases()
-
-    disease_count = {}
-    for c in cases:
-        d = c["disease"]
-        disease_count[d] = disease_count.get(d, 0) + 1
-
     return {
-        "total_cases": len(cases),
-        "disease_distribution": disease_count
+        "total_cases": 0,
+        "disease_distribution": {}
     }
-
-
 # ==============================
 # ✅ VOTE
 # ==============================
@@ -402,3 +393,4 @@ def trend():
         "labels": ["Day 1", "Day 2"],
         "data": [5, 12]
     }
+ 

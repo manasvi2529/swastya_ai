@@ -4,14 +4,28 @@ function Stats({ refreshKey }) {
   const [stats, setStats] = useState(null);
 
   const fetchStats = async () => {
-    try {
-      const res = await fetch("http://127.0.0.1:8000/stats");
-      const data = await res.json();
-      setStats(data);
-    } catch (err) {
-      console.error("Stats error:", err);
+  try {
+    const res = await fetch("http://127.0.0.1:8000/stats");
+
+    if (!res.ok) {
+      console.error("API failed:", res.status);
+      return;
     }
-  };
+
+    const data = await res.json();
+
+    console.log("DATA:", data);
+
+    // 🔥 GUARANTEE VALID OBJECT
+    setStats({
+      total_cases: data.total_cases || 0,
+      disease_distribution: data.disease_distribution || {}
+    });
+
+  } catch (err) {
+    console.error("Stats error:", err);
+  }
+};
 
   useEffect(() => {
     fetchStats();
@@ -22,7 +36,11 @@ function Stats({ refreshKey }) {
     return () => clearInterval(interval);
   }, [refreshKey]);
 
-  if (!stats) return <p>Loading stats...</p>;
+  if (stats === null) return <p>Loading stats...</p>;
+
+if (!stats.total_cases && !stats.disease_distribution) {
+  return <p>No data available</p>;
+}
 
   return (
     <div>

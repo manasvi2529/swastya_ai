@@ -74,7 +74,12 @@ function Prediction() {
       });
 
       const data = await res.json();
-      setResult(data);
+      setResult({
+  predicted_disease: data.predicted_disease || "Unknown",
+  confidence: data.confidence || 0,
+  risk: data.risk || "Low",
+  nearby_hospitals: data.nearby_hospitals || []
+});
       setFeedbackSent(false);
 
       // 🔥 FETCH TRUST DATA
