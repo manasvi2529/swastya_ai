@@ -12,39 +12,83 @@ function TrendGraph() {
       .catch(err => console.error("Trend error:", err));
   }, []);
 
-  if (data.length === 0) return <p>Loading trend...</p>;
+  if (data.length === 0) return <p style={loading}>⏳ Loading trend...</p>;
 
   return (
-    <div style={{
-      background: "#111827",
-      padding: "15px",
-      borderRadius: "10px",
-      marginTop: "15px"
-    }}>
-      <h3>📈 Outbreak Trend</h3>
+    <div style={container}>
+      <h3 style={title}>📈 Outbreak Trend</h3>
 
       {/* SIMPLE BARS */}
-      <div style={{
-        display: "flex",
-        alignItems: "flex-end",
-        height: "150px",
-        gap: "8px"
-      }}>
+      <div style={chartContainer}>
         {data.map((val, i) => (
           <div
             key={i}
             style={{
-              width: "20px",
-              height: `${val * 5}px`,
-              background: "#2563eb",
-              borderRadius: "4px"
+              ...bar,
+              height: `${Math.max(val * 5, 10)}px`,
+              background: `linear-gradient(180deg, #6366f1, #8b5cf6)`
             }}
             title={`Cases: ${val}`}
           />
         ))}
       </div>
+      
+      <div style={xAxis}>
+        {data.map((_, i) => (
+          <span key={i} style={xLabel}>D{i+1}</span>
+        ))}
+      </div>
     </div>
   );
 }
+
+const loading = {
+  color: "#71717a",
+  fontSize: "0.9rem",
+  padding: "20px",
+  textAlign: "center"
+};
+
+const container = {
+  background: "linear-gradient(145deg, rgba(24, 24, 27, 0.9), rgba(24, 24, 27, 0.5))",
+  padding: "20px",
+  borderRadius: "16px",
+  backdropFilter: "blur(12px)"
+};
+
+const title = {
+  fontSize: "1.1rem",
+  fontWeight: "600",
+  marginBottom: "20px",
+  color: "#fafafa"
+};
+
+const chartContainer = {
+  display: "flex",
+  alignItems: "flex-end",
+  height: "150px",
+  gap: "8px",
+  padding: "0 10px"
+};
+
+const bar = {
+  flex: 1,
+  borderRadius: "6px 6px 2px 2px",
+  minHeight: "10px",
+  transition: "all 0.3s ease",
+  cursor: "pointer"
+};
+
+const xAxis = {
+  display: "flex",
+  justifyContent: "space-between",
+  padding: "10px 10px 0",
+  marginTop: "8px"
+};
+
+const xLabel = {
+  color: "#71717a",
+  fontSize: "0.7rem"
+};
 
 export default TrendGraph;

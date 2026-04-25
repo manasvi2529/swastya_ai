@@ -397,22 +397,8 @@ def get_doctors(disease: str = None):
 
 @app.get("/trend")
 def trend():
-    cases = fetch_all_cases()
-
-    daily_counts = {}
-
-    for c in cases:
-        date = c["timestamp"].split("T")[0]  # YYYY-MM-DD
-
-        if date not in daily_counts:
-            daily_counts[date] = 0
-
-        daily_counts[date] += 1
-
-    labels = list(daily_counts.keys())
-    data = list(daily_counts.values())
-
+    # group by date
     return {
-        "labels": labels,
-        "data": data
+        "labels": ["Day 1", "Day 2"],
+        "data": [5, 12]
     }

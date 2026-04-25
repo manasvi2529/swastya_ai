@@ -179,33 +179,148 @@ function Map() {
   return (
     <div>
       {/* 🔥 TOGGLE */}
-      <div style={{ marginBottom: "10px" }}>
-        <button onClick={() => setMode("outbreak")}>Outbreak</button>
-        <button onClick={() => setMode("heat")}>Heatmap</button>
-        <button onClick={() => setMode("both")}>Combined</button>
+      <div style={modeToggle}>
+        <button 
+          onClick={() => setMode("outbreak")} 
+          style={mode === "outbreak" ? modeActiveBtn : modeBtn}
+        >
+          🦠 Outbreak
+        </button>
+        <button 
+          onClick={() => setMode("heat")} 
+          style={mode === "heat" ? modeActiveBtn : modeBtn}
+        >
+          🔥 Heatmap
+        </button>
+        <button 
+          onClick={() => setMode("both")} 
+          style={mode === "both" ? modeActiveBtn : modeBtn}
+        >
+          🗺️ Combined
+        </button>
       </div>
 
       {/* 🔥 STATS */}
-      <div style={{ marginBottom: "10px" }}>
-        <b>Cases:</b> {stats.cases} | <b>Clusters:</b> {stats.clusters}
+      <div style={statsBar}>
+        <div style={statItem}>
+          <span style={statValue}>{stats.cases}</span>
+          <span style={statLabel}>Cases</span>
+        </div>
+        <div style={statDivider}></div>
+        <div style={statItem}>
+          <span style={statValue}>{stats.clusters}</span>
+          <span style={statLabel}>Clusters</span>
+        </div>
       </div>
 
       {/* 🔥 MAP */}
       <div
         id="map-container"
-        style={{
-          height: "400px",
-          width: "100%",
-          borderRadius: "12px"
-        }}
+        style={mapContainer}
       />
 
       {/* 🔥 LEGEND */}
-      <div style={{ marginTop: "10px", fontSize: "14px" }}>
-        🔴 High Risk | 🟡 Medium | 🟢 Safe | 🔥 Heatmap = intensity
+      <div style={legend}>
+        <span style={legendItem}><span style={{...legendDot, background: "#ef4444"}}></span> High Risk</span>
+        <span style={legendItem}><span style={{...legendDot, background: "#f59e0b"}}></span> Medium</span>
+        <span style={legendItem}><span style={{...legendDot, background: "#22c55e"}}></span> Safe</span>
+        <span style={legendItem}>🔥 Heatmap = intensity</span>
       </div>
     </div>
   );
 }
+
+const modeToggle = {
+  display: "flex",
+  gap: "8px",
+  marginBottom: "16px"
+};
+
+const modeBtn = {
+  flex: 1,
+  padding: "10px 14px",
+  background: "rgba(24, 24, 27, 0.8)",
+  color: "#71717a",
+  border: "1px solid rgba(255, 255, 255, 0.06)",
+  borderRadius: "10px",
+  cursor: "pointer",
+  fontWeight: "500",
+  fontSize: "0.85rem",
+  transition: "all 0.2s ease"
+};
+
+const modeActiveBtn = {
+  ...modeBtn,
+  background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+  color: "white",
+  border: "none",
+  boxShadow: "0 4px 15px rgba(99, 102, 241, 0.3)"
+};
+
+const statsBar = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "20px",
+  padding: "14px 20px",
+  background: "rgba(24, 24, 27, 0.8)",
+  borderRadius: "12px",
+  marginBottom: "16px"
+};
+
+const statItem = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center"
+};
+
+const statValue = {
+  color: "#818cf8",
+  fontSize: "1.5rem",
+  fontWeight: "700"
+};
+
+const statLabel = {
+  color: "#71717a",
+  fontSize: "0.75rem",
+  textTransform: "uppercase",
+  letterSpacing: "0.05em"
+};
+
+const statDivider = {
+  width: "1px",
+  height: "30px",
+  background: "rgba(255, 255, 255, 0.1)"
+};
+
+const mapContainer = {
+  height: "400px",
+  width: "100%",
+  borderRadius: "16px",
+  overflow: "hidden",
+  border: "1px solid rgba(255, 255, 255, 0.06)"
+};
+
+const legend = {
+  display: "flex",
+  justifyContent: "center",
+  gap: "20px",
+  marginTop: "14px",
+  fontSize: "0.8rem",
+  color: "#71717a"
+};
+
+const legendItem = {
+  display: "flex",
+  alignItems: "center",
+  gap: "6px"
+};
+
+const legendDot = {
+  display: "inline-block",
+  width: "10px",
+  height: "10px",
+  borderRadius: "50%"
+};
 
 export default Map;

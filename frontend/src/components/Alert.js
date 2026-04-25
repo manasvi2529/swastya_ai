@@ -39,21 +39,36 @@ function Alert({ refreshKey }) {
       ...card,
       border: `2px solid ${colors[level]}`
     }}>
-      <h3 style={{ color: colors[level] }}>
+      <h3 style={alertTitle}>
         {icons[level]} System Alert
       </h3>
 
-      <p style={{ fontSize: "18px" }}>
+      <p style={alertText}>
         {alert || "No alerts yet"}
       </p>
     </div>
   );
 }
 
+const alertTitle = {
+  fontSize: "1rem",
+  fontWeight: "600",
+  marginBottom: "12px",
+  display: "flex",
+  alignItems: "center",
+  gap: "8px"
+};
+
+const alertText = {
+  fontSize: "1.1rem",
+  fontWeight: "500",
+  lineHeight: "1.5"
+};
+
 const colors = {
-  high: "red",
-  medium: "orange",
-  safe: "green"
+  high: "#ef4444",
+  medium: "#f59e0b",
+  safe: "#22c55e"
 };
 
 const icons = {
@@ -63,10 +78,11 @@ const icons = {
 };
 
 const card = {
-  background: "#111827",
-  padding: "15px",
-  borderRadius: "10px",
-  textAlign: "center"
+  background: "linear-gradient(145deg, rgba(24, 24, 27, 0.9), rgba(24, 24, 27, 0.5))",
+  padding: "20px",
+  borderRadius: "16px",
+  textAlign: "center",
+  backdropFilter: "blur(12px)"
 };
 
 export default Alert;

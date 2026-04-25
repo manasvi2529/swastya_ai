@@ -91,31 +91,26 @@ function Hospitals() {
   }, []);
 
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
+    <div style={pageContainer}>
 
       {/* LEFT PANEL */}
-      <div style={{
-        width: "30%",
-        background: "#0f172a",
-        padding: "15px",
-        overflowY: "auto"
-      }}>
+      <div style={leftPanel}>
 
         {/* 🔥 CONTEXT INFO */}
         {disease && (
-          <p style={{ color: "#22c55e", fontWeight: "bold" }}>
-            Recommended for: {disease}
+          <p style={contextBadge}>
+            ✨ Recommended for: {disease}
           </p>
         )}
 
         {!lat && !lon && (
-          <p style={{ color: "orange" }}>
+          <p style={locationHint}>
             📍 Showing general hospitals (add location for better results)
           </p>
         )}
 
         {/* 🔥 TAB SWITCH */}
-        <div style={{ display: "flex", marginBottom: "15px" }}>
+        <div style={tabContainer}>
           <button
             style={tab === "hospitals" ? activeTab : tabBtn}
             onClick={() => setTab("hospitals")}
@@ -136,45 +131,49 @@ function Hospitals() {
         ====================== */}
         {tab === "hospitals" && (
           <>
-            <button onClick={detectLocation}>Use My Location</button>
+            <button onClick={detectLocation} style={primaryBtn}>
+              📍 Use My Location
+            </button>
 
-            <br /><br />
+            <div style={inputGroup}>
+              <input
+                placeholder="Latitude"
+                value={lat}
+                onChange={(e) => setLat(e.target.value)}
+                style={input}
+              />
+              <input
+                placeholder="Longitude"
+                value={lon}
+                onChange={(e) => setLon(e.target.value)}
+                style={input}
+              />
+            </div>
 
-            <input
-              placeholder="Latitude"
-              value={lat}
-              onChange={(e) => setLat(e.target.value)}
-            />
-            <input
-              placeholder="Longitude"
-              value={lon}
-              onChange={(e) => setLon(e.target.value)}
-            />
-
-            <br /><br />
-
-            <button onClick={fetchHospitals}>
-              {loading ? "Loading..." : "Refresh Hospitals"}
+            <button onClick={fetchHospitals} style={refreshBtn}>
+              {loading ? "⏳ Loading..." : "🔄 Refresh Hospitals"}
             </button>
 
             {hospitals.map((h, i) => (
-              <div key={i} style={card}>
-                <h4>{h.name}</h4>
+              <div key={i} style={hospitalCard}>
+                <h4 style={hospitalName}>{h.name}</h4>
 
-                {h.distance && <p>📍 {h.distance} km away</p>}
-                <p>📞 {h.phone}</p>
+                {h.distance && <p style={distance}>📍 {h.distance} km away</p>}
+                <p style={phone}>📞 {h.phone}</p>
 
-                <a href={`tel:${h.phone}`}>
-                  <button style={btn}>Call</button>
-                </a>
+                <div style={btnGroup}>
+                  <a href={`tel:${h.phone}`}>
+                    <button style={callBtn}>📞 Call</button>
+                  </a>
 
-                <a
-                  href={`https://www.google.com/maps/dir/?api=1&destination=${h.lat},${h.lon}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <button style={btn}>Directions</button>
-                </a>
+                  <a
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${h.lat},${h.lon}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <button style={directionBtn}>🧭 Directions</button>
+                  </a>
+                </div>
               </div>
             ))}
           </>
@@ -186,21 +185,23 @@ function Hospitals() {
         {tab === "doctors" && (
           <>
             {doctors.map((d, i) => (
-              <div key={i} style={card}>
-                <h4>{d.name}</h4>
-                <p>{d.specialization}</p>
-                <p>📞 {d.phone}</p>
+              <div key={i} style={hospitalCard}>
+                <h4 style={hospitalName}>{d.name}</h4>
+                <p style={specialization}>{d.specialization}</p>
+                <p style={phone}>📞 {d.phone}</p>
 
-                <a href={`tel:${d.phone}`}>
-                  <button style={btn}>Call</button>
-                </a>
+                <div style={btnGroup}>
+                  <a href={`tel:${d.phone}`}>
+                    <button style={callBtn}>📞 Call</button>
+                  </a>
 
-                <button
-                  style={btn}
-                  onClick={() => alert("Appointment requested")}
-                >
-                  Book Appointment
-                </button>
+                  <button
+                    style={bookBtn}
+                    onClick={() => alert("Appointment requested")}
+                  >
+                    📅 Book Appointment
+                  </button>
+                </div>
               </div>
             ))}
           </>
@@ -209,11 +210,12 @@ function Hospitals() {
       </div>
 
       {/* RIGHT MAP */}
-      <div style={{ width: "70%" }}>
+      <div style={rightPanel}>
         <iframe
           title="map"
           width="100%"
           height="100%"
+          style={{ border: "none" }}
           src="https://www.openstreetmap.org/export/embed.html"
         />
       </div>
@@ -222,36 +224,191 @@ function Hospitals() {
   );
 }
 
+const pageContainer = {
+  display: "flex",
+  height: "calc(100vh - 40px)",
+  background: "#0a0a0f"
+};
+
+const leftPanel = {
+  width: "35%",
+  minWidth: "320px",
+  background: "linear-gradient(180deg, rgba(10,10,15,0.98), rgba(24,24,27,0.95))",
+  padding: "20px",
+  overflowY: "auto",
+  borderRight: "1px solid rgba(255,255,255,0.06)"
+};
+
+const rightPanel = {
+  width: "65%",
+  background: "#18181b"
+};
+
+const contextBadge = {
+  color: "#22c55e",
+  fontWeight: "600",
+  fontSize: "0.9rem",
+  padding: "10px 14px",
+  background: "rgba(34, 197, 94, 0.1)",
+  borderRadius: "10px",
+  marginBottom: "16px",
+  border: "1px solid rgba(34, 197, 94, 0.2)"
+};
+
+const locationHint = {
+  color: "#fbbf24",
+  fontSize: "0.85rem",
+  padding: "10px 14px",
+  background: "rgba(251, 191, 36, 0.1)",
+  borderRadius: "10px",
+  marginBottom: "16px",
+  border: "1px solid rgba(251, 191, 36, 0.2)"
+};
+
+const tabContainer = {
+  display: "flex",
+  gap: "8px",
+  marginBottom: "20px"
+};
+
 const tabBtn = {
   flex: 1,
-  padding: "10px",
-  background: "#1e293b",
-  color: "white",
-  border: "none",
-  cursor: "pointer"
+  padding: "12px",
+  background: "rgba(24, 24, 27, 0.8)",
+  color: "#a1a1aa",
+  border: "1px solid rgba(255,255,255,0.06)",
+  borderRadius: "10px",
+  cursor: "pointer",
+  fontWeight: "500",
+  fontSize: "0.85rem",
+  transition: "all 0.2s ease"
 };
 
 const activeTab = {
   ...tabBtn,
-  background: "#2563eb"
-};
-
-const card = {
-  background: "#1e293b",
-  padding: "15px",
-  marginTop: "10px",
-  borderRadius: "10px"
-};
-
-const btn = {
-  marginTop: "8px",
-  marginRight: "8px",
-  padding: "8px",
-  background: "#2563eb",
+  background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
   color: "white",
   border: "none",
-  borderRadius: "6px",
-  cursor: "pointer"
+  boxShadow: "0 4px 15px rgba(99, 102, 241, 0.3)"
+};
+
+const primaryBtn = {
+  width: "100%",
+  padding: "14px",
+  background: "linear-gradient(135deg, #10b981, #059669)",
+  color: "white",
+  border: "none",
+  borderRadius: "12px",
+  cursor: "pointer",
+  fontWeight: "600",
+  fontSize: "0.9rem",
+  marginBottom: "16px",
+  boxShadow: "0 4px 15px rgba(16, 185, 129, 0.3)"
+};
+
+const inputGroup = {
+  display: "flex",
+  gap: "10px",
+  marginBottom: "12px"
+};
+
+const input = {
+  flex: 1,
+  padding: "12px 14px",
+  background: "rgba(24, 24, 27, 0.8)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  borderRadius: "10px",
+  color: "white",
+  fontSize: "0.85rem"
+};
+
+const refreshBtn = {
+  width: "100%",
+  padding: "12px",
+  background: "rgba(24, 24, 27, 0.8)",
+  color: "#e4e4e7",
+  border: "1px solid rgba(255,255,255,0.1)",
+  borderRadius: "10px",
+  cursor: "pointer",
+  fontWeight: "500",
+  fontSize: "0.85rem",
+  marginBottom: "20px"
+};
+
+const hospitalCard = {
+  background: "linear-gradient(145deg, rgba(24, 24, 27, 0.9), rgba(24, 24, 27, 0.5))",
+  padding: "16px",
+  marginTop: "12px",
+  borderRadius: "14px",
+  border: "1px solid rgba(255,255,255,0.06)",
+  boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
+  transition: "all 0.2s ease"
+};
+
+const hospitalName = {
+  fontSize: "1rem",
+  fontWeight: "600",
+  color: "#fafafa",
+  marginBottom: "8px"
+};
+
+const distance = {
+  color: "#818cf8",
+  fontSize: "0.85rem",
+  marginBottom: "4px"
+};
+
+const phone = {
+  color: "#a1a1aa",
+  fontSize: "0.85rem",
+  marginBottom: "12px"
+};
+
+const specialization = {
+  color: "#c084fc",
+  fontSize: "0.85rem",
+  marginBottom: "4px"
+};
+
+const btnGroup = {
+  display: "flex",
+  gap: "8px"
+};
+
+const callBtn = {
+  flex: 1,
+  padding: "10px",
+  background: "rgba(99, 102, 241, 0.2)",
+  color: "#818cf8",
+  border: "1px solid rgba(99, 102, 241, 0.3)",
+  borderRadius: "8px",
+  cursor: "pointer",
+  fontWeight: "500",
+  fontSize: "0.8rem"
+};
+
+const directionBtn = {
+  flex: 1,
+  padding: "10px",
+  background: "rgba(34, 197, 94, 0.2)",
+  color: "#22c55e",
+  border: "1px solid rgba(34, 197, 94, 0.3)",
+  borderRadius: "8px",
+  cursor: "pointer",
+  fontWeight: "500",
+  fontSize: "0.8rem"
+};
+
+const bookBtn = {
+  flex: 1,
+  padding: "10px",
+  background: "rgba(192, 132, 252, 0.2)",
+  color: "#c084fc",
+  border: "1px solid rgba(192, 132, 252, 0.3)",
+  borderRadius: "8px",
+  cursor: "pointer",
+  fontWeight: "500",
+  fontSize: "0.8rem"
 };
 
 export default Hospitals;

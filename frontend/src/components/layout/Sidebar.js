@@ -7,8 +7,7 @@ function Sidebar() {
 
       <nav style={styles.nav}>
         <Link to="/" style={styles.link}>Dashboard</Link>
-        <Link to="/map" style={styles.link}>Map</Link>
-        <Link to="/hospitals" style={styles.link}>Hospitals</Link>
+         <Link to="/hospitals" style={styles.link}>Hospitals</Link>
       </nav>
     </div>
   );

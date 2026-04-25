@@ -1,35 +1,86 @@
+/* 🎨 App Styles - Enhanced */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f172a;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: #0a0a0f;
   color: white;
 }
 
 .container {
-  max-width: 900px;
-  margin: auto;
-  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
 }
 
+/* Enhanced cards with glassmorphism */
 .card {
-  background: #1e293b;
-  padding: 20px;
-  border-radius: 10px;
+  background: linear-gradient(145deg, rgba(24, 24, 27, 0.8), rgba(24, 24, 27, 0.4));
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 24px;
+  border-radius: 16px;
   margin-bottom: 20px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
+.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(99, 102, 241, 0.3);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(99, 102, 241, 0.1);
+}
+
+/* Enhanced buttons */
 button {
-  padding: 10px 20px;
-  background: #3b82f6;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
   border: none;
   color: white;
-  border-radius: 5px;
+  border-radius: 12px;
   cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
 }
 
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5);
+}
+
+/* Enhanced inputs */
 input {
-  margin: 5px;
-  padding: 8px;
-  border-radius: 5px;
-  border: none;
+  margin: 8px 0;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(24, 24, 27, 0.8);
+  color: white;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+  outline: none;
+}
+
+/* Grid layouts */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .grid-2, .grid-3 {
+    grid-template-columns: 1fr;
+  }
 }

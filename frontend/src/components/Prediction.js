@@ -114,142 +114,153 @@ function Prediction() {
 
   return (
     <div>
-      <h3>🧠 Predict Disease</h3>
+      <h3 style={sectionTitle}>🧠 Predict Disease</h3>
 
-      {allSymptoms.map(s => (
-        <label key={s} style={{ display: "block" }}>
-          <input type="checkbox" onChange={() => handleCheckbox(s)} />
-          {s}
-        </label>
-      ))}
+      <div style={symptomGrid}>
+        {allSymptoms.map(s => (
+          <label key={s} style={symptomLabel}>
+            <input 
+              type="checkbox" 
+              onChange={() => handleCheckbox(s)} 
+              style={checkbox}
+            />
+            <span style={symptomText}>{s}</span>
+          </label>
+        ))}
+      </div>
 
-      <br />
+      <h4 style={subTitle}>📍 Location</h4>
 
-      <h4>📍 Location</h4>
+      <button onClick={detectLocation} style={locationBtn}>
+        📍 Use My Location
+      </button>
 
-      <button onClick={detectLocation}>Use My Location</button>
+      <div style={inputRow}>
+        <input 
+          value={lat} 
+          onChange={(e) => setLat(e.target.value)} 
+          placeholder="Latitude" 
+          style={input}
+        />
+        <input 
+          value={lon} 
+          onChange={(e) => setLon(e.target.value)} 
+          placeholder="Longitude" 
+          style={input}
+        />
+      </div>
 
-      <br /><br />
+      {locationReady && <p style={successMsg}>✅ Location detected</p>}
+      {locationError && <p style={errorMsg}>{locationError}</p>}
 
-      <input value={lat} onChange={(e) => setLat(e.target.value)} placeholder="Latitude" />
-      <input value={lon} onChange={(e) => setLon(e.target.value)} placeholder="Longitude" />
+      <button onClick={skipLocation} style={skipBtn}>
+        Skip Location
+      </button>
 
-      <br />
-
-      {locationReady && <p>✅ Location detected</p>}
-      {locationError && <p style={{ color: "red" }}>{locationError}</p>}
-
-      <br />
-
-      <button onClick={skipLocation}>Skip Location</button>
-
-      <br /><br />
-
-      <button onClick={submitData} disabled={submitting}>
-        {submitting ? "Submitting..." : "Predict"}
+      <button onClick={submitData} disabled={submitting} style={submitBtn}>
+        {submitting ? "⏳ Analyzing..." : "🔬 Predict Disease"}
       </button>
 
       {result && (
-        <div style={{
-          marginTop: "20px",
-          padding: "15px",
-          background: "#111827",
-          borderRadius: "8px"
-        }}>
-          <h4>Prediction Result</h4>
+        <div style={resultCard}>
+          <h4 style={resultTitle}>🎯 Prediction Result</h4>
 
-          <p><b>Disease:</b> {result.predicted_disease}</p>
+          <div style={resultMain}>
+            <span style={resultLabel}>Disease</span>
+            <span style={resultValue}>{result.predicted_disease}</span>
+          </div>
 
           {/* 🔥 NEW CONFIDENCE SYSTEM */}
-<p>
-  <b>Base Confidence:</b>{" "}
-  {result.confidence !== undefined && result.confidence !== null
-    ? (result.confidence * 100).toFixed(1)
-    : "N/A"}%
-</p>
-          {trust && (
-            <>
-              <p><b>Community Trust:</b> {(trust.trust_score * 100).toFixed(1)}%</p>
+          <div style={confidenceRow}>
+            <div style={confidenceItem}>
+              <span style={confLabel}>Base Confidence</span>
+              <span style={confValue}>
+                {result.confidence !== undefined && result.confidence !== null
+                  ? (result.confidence * 100).toFixed(1)
+                  : "N/A"}%
+              </span>
+            </div>
+            {trust && (
+              <div style={confidenceItem}>
+                <span style={confLabel}>Community Trust</span>
+                <span style={confValue}>{(trust.trust_score * 100).toFixed(1)}%</span>
+              </div>
+            )}
+            {trust && (
+              <div style={{...confidenceItem, background: "rgba(99, 102, 241, 0.2)"}}>
+                <span style={confLabel}>Final Confidence</span>
+                <span style={{...confValue, color: "#818cf8"}}>
+                  {(
+                    result.confidence *
+                    (0.5 + trust.trust_score) *
+                    100
+                  ).toFixed(1)}%
+                </span>
+              </div>
+            )}
+          </div>
 
-              <p>
-                <b>Final Confidence:</b>{" "}
-                {(
-                  result.confidence *
-                  (0.5 + trust.trust_score) *
-                  100
-                ).toFixed(1)}%
-              </p>
-            </>
-          )}
+          {/* Risk Level */}
+          <div style={riskSection}>
+            <span style={resultLabel}>Risk Level</span>
+            {result.risk === "High" && (
+              <div style={riskBadgeHigh}>
+                🚨 High Risk Area Detected<br/>
+                <span style={riskSub}>Avoid crowded places</span>
+              </div>
+            )}
 
-          <p><b>Risk:</b> {result.risk === "High" && (
-  <p style={{ color: "red" }}>
-    🚨 High Risk Area Detected<br/>
-    Avoid crowded places
-  </p>
-)}
+            {result.risk === "Medium" && (
+              <div style={riskBadgeMedium}>
+                ⚠️ Moderate Risk<br/>
+                <span style={riskSub}>Stay cautious</span>
+              </div>
+            )}
 
-{result.risk === "Medium" && (
-  <p style={{ color: "orange" }}>
-    ⚠️ Moderate Risk<br/>
-    Stay cautious
-  </p>
-)}
-
-{result.risk === "Low" && (
-  <p style={{ color: "green" }}>
-    ✅ Low Risk Area
-  </p>
-)}</p>
+            {result.risk === "Low" && (
+              <div style={riskBadgeLow}>
+                ✅ Low Risk Area
+              </div>
+            )}
+          </div>
 
           {lat && lon ? (
-            <p>📍 Based on your location</p>
+            <p style={locationNote}>📍 Based on your location</p>
           ) : (
-            <p>🌍 Showing general trends</p>
+            <p style={locationNote}>🌍 Showing general trends</p>
           )}
 
-          <h5>Nearby Hospitals:</h5>
+          <h5 style={hospitalTitle}>🏥 Nearby Hospitals:</h5>
 
-{result.nearby_hospitals?.slice(0, 3).map((h, i) => (
-  <div key={i} style={{
-    padding: "10px",
-    marginTop: "8px",
-    background: "#1e293b",
-    borderRadius: "8px"
-  }}>
-    🏥 {h.name}
-  </div>
-))}
+          {result.nearby_hospitals?.slice(0, 3).map((h, i) => (
+            <div key={i} style={hospitalItem}>
+              🏥 {h.name}
+            </div>
+          ))}
 
-<button
-  style={{
-    marginTop: "12px",
-    padding: "10px",
-    background: "#2563eb",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer"
-  }}
-  onClick={() => window.location.href = "/hospitals"}
->
-  View Details / Book Appointment →
-</button>
+          <button
+            style={viewBtn}
+            onClick={() => window.location.href = "/hospitals"}
+          >
+            View Details / Book Appointment →
+          </button>
 
           {!feedbackSent ? (
-            <div style={{ marginTop: "15px" }}>
-              <p><b>Was this prediction correct?</b></p>
+            <div style={feedbackSection}>
+              <p style={feedbackTitle}><b>Was this prediction correct?</b></p>
 
-              <button onClick={() => sendFeedback(true)}>👍 Correct</button>
-              <button onClick={() => sendFeedback(false)}>👎 Not Correct</button>
+              <div style={feedbackBtns}>
+                <button onClick={() => sendFeedback(true)} style={yesBtn}>👍 Correct</button>
+                <button onClick={() => sendFeedback(false)} style={noBtn}>👎 Not Correct</button>
+              </div>
             </div>
           ) : (
-            <p style={{ color: "green", marginTop: "10px" }}>
+            <p style={thanksMsg}>
               ✅ Thanks for your feedback!
             </p>
           )}
 
-          <div style={{ marginTop: "15px", fontSize: "12px", color: "#9ca3af" }}>
+          <div style={disclaimer}>
             🔒 Anonymous system • No personal data stored • Community validated
           </div>
         </div>
@@ -257,5 +268,312 @@ function Prediction() {
     </div>
   );
 }
+
+const sectionTitle = {
+  fontSize: "1.1rem",
+  fontWeight: "600",
+  marginBottom: "16px",
+  color: "#fafafa"
+};
+
+const subTitle = {
+  fontSize: "0.95rem",
+  fontWeight: "500",
+  marginTop: "20px",
+  marginBottom: "12px",
+  color: "#a1a1aa"
+};
+
+const symptomGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(2, 1fr)",
+  gap: "10px",
+  marginBottom: "16px"
+};
+
+const symptomLabel = {
+  display: "flex",
+  alignItems: "center",
+  gap: "10px",
+  padding: "12px 16px",
+  background: "rgba(24, 24, 27, 0.8)",
+  borderRadius: "10px",
+  border: "1px solid rgba(255, 255, 255, 0.06)",
+  cursor: "pointer",
+  transition: "all 0.2s ease"
+};
+
+const checkbox = {
+  width: "18px",
+  height: "18px",
+  accentColor: "#6366f1"
+};
+
+const symptomText = {
+  color: "#e4e4e7",
+  fontSize: "0.9rem",
+  textTransform: "capitalize"
+};
+
+const locationBtn = {
+  display: "block",
+  width: "100%",
+  padding: "14px",
+  background: "linear-gradient(135deg, #10b981, #059669)",
+  color: "white",
+  border: "none",
+  borderRadius: "12px",
+  cursor: "pointer",
+  fontWeight: "600",
+  fontSize: "0.9rem",
+  marginBottom: "12px",
+  boxShadow: "0 4px 15px rgba(16, 185, 129, 0.3)"
+};
+
+const inputRow = {
+  display: "flex",
+  gap: "10px",
+  marginBottom: "12px"
+};
+
+const input = {
+  flex: 1,
+  padding: "12px 14px",
+  background: "rgba(24, 24, 27, 0.8)",
+  border: "1px solid rgba(255, 255, 255, 0.1)",
+  borderRadius: "10px",
+  color: "white",
+  fontSize: "0.85rem"
+};
+
+const successMsg = {
+  color: "#22c55e",
+  fontSize: "0.85rem",
+  marginBottom: "8px"
+};
+
+const errorMsg = {
+  color: "#ef4444",
+  fontSize: "0.85rem",
+  marginBottom: "8px"
+};
+
+const skipBtn = {
+  padding: "10px 16px",
+  background: "transparent",
+  color: "#71717a",
+  border: "1px solid rgba(255, 255, 255, 0.1)",
+  borderRadius: "8px",
+  cursor: "pointer",
+  fontSize: "0.85rem",
+  marginRight: "8px"
+};
+
+const submitBtn = {
+  padding: "14px 24px",
+  background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+  color: "white",
+  border: "none",
+  borderRadius: "12px",
+  cursor: "pointer",
+  fontWeight: "600",
+  fontSize: "0.95rem",
+  boxShadow: "0 4px 20px rgba(99, 102, 241, 0.4)",
+  marginTop: "8px"
+};
+
+const resultCard = {
+  marginTop: "24px",
+  padding: "20px",
+  background: "linear-gradient(145deg, rgba(24, 24, 27, 0.95), rgba(24, 24, 27, 0.6))",
+  borderRadius: "16px",
+  border: "1px solid rgba(99, 102, 241, 0.2)",
+  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)"
+};
+
+const resultTitle = {
+  fontSize: "1.1rem",
+  fontWeight: "600",
+  marginBottom: "16px",
+  color: "#fafafa"
+};
+
+const resultMain = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: "16px",
+  background: "rgba(99, 102, 241, 0.15)",
+  borderRadius: "12px",
+  marginBottom: "16px"
+};
+
+const resultLabel = {
+  color: "#a1a1aa",
+  fontSize: "0.85rem"
+};
+
+const resultValue = {
+  color: "#818cf8",
+  fontSize: "1.25rem",
+  fontWeight: "700",
+  textTransform: "capitalize"
+};
+
+const confidenceRow = {
+  display: "grid",
+  gridTemplateColumns: "repeat(3, 1fr)",
+  gap: "10px",
+  marginBottom: "16px"
+};
+
+const confidenceItem = {
+  padding: "12px",
+  background: "rgba(24, 24, 27, 0.8)",
+  borderRadius: "10px",
+  textAlign: "center"
+};
+
+const confLabel = {
+  display: "block",
+  fontSize: "0.7rem",
+  color: "#71717a",
+  textTransform: "uppercase",
+  letterSpacing: "0.05em",
+  marginBottom: "4px"
+};
+
+const confValue = {
+  color: "#22c55e",
+  fontSize: "1rem",
+  fontWeight: "600"
+};
+
+const riskSection = {
+  marginBottom: "16px"
+};
+
+const riskBadgeHigh = {
+  padding: "14px",
+  background: "rgba(239, 68, 68, 0.15)",
+  border: "1px solid rgba(239, 68, 68, 0.3)",
+  borderRadius: "10px",
+  color: "#fca5a5",
+  fontSize: "0.9rem",
+  fontWeight: "500"
+};
+
+const riskBadgeMedium = {
+  padding: "14px",
+  background: "rgba(251, 191, 36, 0.15)",
+  border: "1px solid rgba(251, 191, 36, 0.3)",
+  borderRadius: "10px",
+  color: "#fde047",
+  fontSize: "0.9rem",
+  fontWeight: "500"
+};
+
+const riskBadgeLow = {
+  padding: "14px",
+  background: "rgba(34, 197, 94, 0.15)",
+  border: "1px solid rgba(34, 197, 94, 0.3)",
+  borderRadius: "10px",
+  color: "#22c55e",
+  fontSize: "0.9rem",
+  fontWeight: "500"
+};
+
+const riskSub = {
+  fontSize: "0.8rem",
+  opacity: 0.8
+};
+
+const locationNote = {
+  color: "#71717a",
+  fontSize: "0.85rem",
+  marginBottom: "16px"
+};
+
+const hospitalTitle = {
+  fontSize: "0.95rem",
+  fontWeight: "500",
+  color: "#a1a1aa",
+  marginBottom: "10px"
+};
+
+const hospitalItem = {
+  padding: "12px 16px",
+  background: "rgba(24, 24, 27, 0.8)",
+  borderRadius: "10px",
+  marginBottom: "8px",
+  color: "#e4e4e7",
+  fontSize: "0.9rem"
+};
+
+const viewBtn = {
+  width: "100%",
+  padding: "14px",
+  background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+  color: "white",
+  border: "none",
+  borderRadius: "12px",
+  cursor: "pointer",
+  fontWeight: "600",
+  fontSize: "0.9rem",
+  marginTop: "16px",
+  boxShadow: "0 4px 15px rgba(99, 102, 241, 0.3)"
+};
+
+const feedbackSection = {
+  marginTop: "20px",
+  paddingTop: "16px",
+  borderTop: "1px solid rgba(255, 255, 255, 0.06)"
+};
+
+const feedbackTitle = {
+  color: "#a1a1aa",
+  fontSize: "0.9rem",
+  marginBottom: "12px"
+};
+
+const feedbackBtns = {
+  display: "flex",
+  gap: "10px"
+};
+
+const yesBtn = {
+  flex: 1,
+  padding: "12px",
+  background: "rgba(34, 197, 94, 0.2)",
+  color: "#22c55e",
+  border: "1px solid rgba(34, 197, 94, 0.3)",
+  borderRadius: "10px",
+  cursor: "pointer",
+  fontWeight: "500"
+};
+
+const noBtn = {
+  flex: 1,
+  padding: "12px",
+  background: "rgba(239, 68, 68, 0.2)",
+  color: "#fca5a5",
+  border: "1px solid rgba(239, 68, 68, 0.3)",
+  borderRadius: "10px",
+  cursor: "pointer",
+  fontWeight: "500"
+};
+
+const thanksMsg = {
+  color: "#22c55e",
+  marginTop: "12px",
+  fontSize: "0.9rem"
+};
+
+const disclaimer = {
+  marginTop: "20px",
+  fontSize: "0.75rem",
+  color: "#52525b",
+  textAlign: "center"
+};
 
 export default Prediction;
